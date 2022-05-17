@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:famistory/card/screens/select_page.dart';
+import 'package:famistory/card/select_page.dart';
 
 class CardPage extends StatelessWidget {
   const CardPage({Key? key}) : super(key: key);
@@ -19,8 +19,8 @@ class CardPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                    context, new MaterialPageRoute(
-                      builder: (context) => new SelectPage(),
+                    context, MaterialPageRoute(
+                      builder: (context) => SelectPage(),
                     ),
                   );
                 },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:famistory/post/screens/post_widgets.dart';
+import 'package:famistory/post/post_widgets.dart';
 
 
 final String name = "user";

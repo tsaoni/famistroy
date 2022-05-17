@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import 'package:famistory/card/screens/card_page.dart';
-import 'package:famistory/info/screens/info_page.dart';
-import 'package:famistory/post/screens/post_page.dart';
+import 'package:famistory/card/card_page.dart';
+import 'package:famistory/info/info_page.dart';
+import 'package:famistory/post/post_page.dart';
 
 void main() {
   runApp(const MyApp());
