@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import 'package:famistory/screens/card/card_page.dart';
-import 'package:famistory/screens/info_page.dart';
-import 'package:famistory/screens/post/post_page.dart';
+import 'package:famistory/card/screens/card_page.dart';
+import 'package:famistory/info/screens/info_page.dart';
+import 'package:famistory/post/screens/post_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,11 +23,11 @@ class MyApp extends StatelessWidget {
       builder: (child) {
         return MaterialApp(
           title: 'Family Stroy',
-          home: MainPage(),
+          home: const MainPage(),
           routes: {
-            '/info': (context) => new InfoPage(),
-            '/post': (context) => new PostPage(),
-            '/card': (context) => new CardPage(),
+            '/info': (context) => InfoPage(),
+            '/post': (context) => PostPage(),
+            '/card': (context) => CardPage(),
           },
           debugShowCheckedModeBanner: false,
         );
@@ -82,27 +82,23 @@ class _MainPageState extends State<MainPage> {
       items: _navBarsItems(),
       navBarHeight: 86.h,
       confineInSafeArea: true,
-      backgroundColor: Colors.white, // Default is Colors.white.
-      handleAndroidBackButtonPress: true, // Default is true.
-      resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-      stateManagement: true, // Default is true.
-      hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        colorBehindNavBar: Colors.white,
-      ),
+      backgroundColor: Colors.black,
+      handleAndroidBackButtonPress: true,
+      resizeToAvoidBottomInset: true,
+      stateManagement: false,
+      hideNavigationBarWhenKeyboardShows: true,
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: ItemAnimationProperties( // Navigation Bar's items animation properties.
+      itemAnimationProperties: ItemAnimationProperties(
         duration: Duration(milliseconds: 200),
         curve: Curves.ease,
       ),
-      screenTransitionAnimation: ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
+      screenTransitionAnimation: ScreenTransitionAnimation(
         animateTabTransition: true,
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),
       ),
-      navBarStyle: NavBarStyle.style1, // Choose the nav bar style with this property.
+      navBarStyle: NavBarStyle.style2,
     );
   }
 
