@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:famistory/card/select_card.dart';
 
 class SelectPage extends StatefulWidget {
   const SelectPage({Key? key}) : super(key: key);
@@ -10,15 +11,16 @@ class SelectPage extends StatefulWidget {
 }
 
 class _SelectPageState extends State<SelectPage> {
-  String dropdownValue = "主題 1";
+  String dropdownValue = "冷笑話";
   bool _hasSelected = false;
   final topics = [    
-    '主題 1',
-    '主題 2',
-    '主題 3',
-    '主題 4',
-    '主題 5',
+    '冷笑話',
+    '愛情',
+    '運動',
+    '政治',
+    '新冠肺炎',
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +43,11 @@ class _SelectPageState extends State<SelectPage> {
                 setState(() {
                   dropdownValue = newValue!;
                   _hasSelected = true;
+                  Navigator.push(
+                    context, MaterialPageRoute(
+                    builder: (context) => SelectCard({dropdownValue}),
+                  ),
+                  );
                 });
               },
             ),
