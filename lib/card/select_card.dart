@@ -6,7 +6,6 @@ import 'package:famistory/card/question_answer.dart';
 import 'package:famistory/card/show_answer.dart';
 
 String theme = "";
-final List<int> colorCodes = <int>[600, 500, 400, 300, 200];
 
 class SelectCard extends StatefulWidget {
 
@@ -30,25 +29,15 @@ class _SelectCardState extends State<SelectCard> {
     return Scaffold(
         body: Center(
           child: ListView.separated(
-            padding: const EdgeInsets.all(8),
-            itemCount: questions[theme]!.length,
-            itemBuilder: (BuildContext context, int index) {
-              return myCard({index.toString()});
-/*
-                Container(
-                width: 340.w,
-                height: 136.h,
-                color: Colors.amber[colorCodes[index]],
-                child: Center(child: Text(_question_title(index))),
-              );
-*/
-            },
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-
-
+                  padding: const EdgeInsets.all(8),
+                  itemCount: questions[theme]!.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                      return myCard({index.toString()});
+                },
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
           )
         )
-        );
+    );
   }
 }
 
@@ -61,22 +50,42 @@ class myCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        child: SizedBox(
-          width: 340.w,
-          height: 136.h,
-          child: ListTile(
-              title: Text('${questions[theme]![index]?.title}'),
-              subtitle: Text('${questions[theme]![index]?.question}'),
-              onTap: () => Navigator.push(
-                context, MaterialPageRoute(
-                builder: (context) => ShowAnswer({theme, index}),
-                ),
-              )
+    if(index == "0") {
+      return Center(
+        child: Card(
+          elevation: 0,
+          color: Colors.transparent,
+          child: SizedBox(
+            width: 340.w,
+            height: 136.h,
+            child: Center(
+                child: Text(theme, style: TextStyle(fontSize: 28.sp),),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
+    else {
+      int tmp = int.parse(index) - 1;
+      index = tmp.toString();
+      return Center(
+        child: Card(
+          child: SizedBox(
+            width: 340.w,
+            height: 136.h,
+            child: ListTile(
+                title: Text('${questions[theme]![index]?.title}'),
+                subtitle: Text('${questions[theme]![index]?.question}'),
+                onTap: () =>
+                    Navigator.push(
+                      context, MaterialPageRoute(
+                      builder: (context) => ShowAnswer({theme, index}),
+                    ),
+                    )
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
