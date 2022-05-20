@@ -22,12 +22,12 @@ class MyApp extends StatelessWidget {
       designSize: const Size(390, 844),
       builder: (child) {
         return MaterialApp(
-          title: 'Family Stroy',
+          title: 'Famistroy',
           home: const MainPage(),
           routes: {
-            '/info': (context) => InfoPage(),
-            '/post': (context) => PostPage(),
-            '/card': (context) => CardPage(),
+            '/info': (context) => const InfoPage(),
+            '/post': (context) => const PostPage(),
+            '/card': (context) => const CardPage(),
           },
           debugShowCheckedModeBanner: false,
         );
@@ -43,30 +43,30 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  PersistentTabController _controller = PersistentTabController(initialIndex: 0);
+  final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
   
   List<Widget> _buildScreens() {
     return [
-      CardPage(),
-      PostPage(),
-      InfoPage(),
+      const CardPage(),
+      const PostPage(),
+      const InfoPage(),
     ];
   }
   
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.photo_fill_on_rectangle_fill),
+        icon: const Icon(CupertinoIcons.photo_fill_on_rectangle_fill),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.chat_bubble_2),
+        icon: const Icon(CupertinoIcons.chat_bubble_2),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.person),
+        icon: const Icon(CupertinoIcons.person),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -89,11 +89,11 @@ class _MainPageState extends State<MainPage> {
       hideNavigationBarWhenKeyboardShows: true,
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: ItemAnimationProperties(
+      itemAnimationProperties: const ItemAnimationProperties(
         duration: Duration(milliseconds: 200),
         curve: Curves.ease,
       ),
-      screenTransitionAnimation: ScreenTransitionAnimation(
+      screenTransitionAnimation: const ScreenTransitionAnimation(
         animateTabTransition: true,
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),

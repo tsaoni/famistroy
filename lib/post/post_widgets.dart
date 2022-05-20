@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'package:famistory/post/service.dart';
 
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -36,8 +40,8 @@ class OnePost extends StatelessWidget {
 
   final String name;
   final String avatar;
-  final String content;
-  final String photo;
+  final RichText content;
+  final XFile photo;
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +54,7 @@ class OnePost extends StatelessWidget {
             SizedBox(width: 20.w),
             UserAvatar(avatar: avatar),
             SizedBox(width: 10.w),
-            Text(
-              name,
-              style: TextStyle(fontSize: 18.sp),
-            ),
+            Text(name, style: TextStyle(fontSize: 18.sp),),
           ],
         ),
         // image post and context
@@ -61,9 +62,9 @@ class OnePost extends StatelessWidget {
           padding: EdgeInsets.all(20.w),
           child: Column(
             children: [
-              Image.asset(photo),
+              Image.file(File(photo.path),),
               SizedBox(height: 10.h,),
-              Text(content),
+              content,
             ],
           ),
         ),
@@ -86,33 +87,6 @@ class OnePost extends StatelessWidget {
   }
 }
 
-class NewPostBtn extends StatelessWidget {
-  const NewPostBtn({
-    Key? key
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 80.w,
-      height: 80.w,
-      child: FittedBox(
-        child: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NewPostPage(),
-              )
-            );
-          }
-        ),
-      ),
-  );
-  }
-}
-
 class NewPostPage extends StatefulWidget {
   const NewPostPage({Key? key}) : super(key: key);
 
@@ -121,55 +95,121 @@ class NewPostPage extends StatefulWidget {
 }
 
 class _NewPostPageState extends State<NewPostPage> {
+  final TextEditingController _controller = TextEditingController();
+  final List<String> exampleContent = <String>["今天", "天氣", "真好"];
+
+  XFile? image;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    body: SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text("新增貼文頁面", style: TextStyle(fontSize: 28.sp),),
-          TextFormField(
-            minLines: 6,
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            decoration: const InputDecoration(
-              hintText: "請輸入文字...",
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              fixedSize: Size(178.w, 54.h),
-              primary: Colors.black,
-            ),
-            child: Text("送出", style: TextStyle(fontSize: 28.sp,),),
-            onPressed: () {
-              // TODO: Add post to db
-            },
-          ),
-          // TODO: Add onPressed functino to return previous page
-          RichText(text: TextSpan(
-            text: "取消變更", 
-            style: TextStyle(
-              fontSize: 18.sp,
-              color: Colors.grey,
-              decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-          Row(
-            // TODO: Add onPressed function to each icon
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Icon(Icons.photo, size: 84.w,),
-              Icon(Icons.mic, size: 180.w,),
-              Icon(Icons.keyboard, size: 84.w,),
+              Text(
+                "新增貼文頁面",
+                style: TextStyle(fontSize: 28.sp),
+              ),
+              // image pre-view
+              Container(
+                child: image != null ? Image.file(File(image!.path)) : null,
+              ),
+              TextFormField(
+                minLines: 6,
+                maxLines: null,
+                controller: _controller,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  hintText: "請輸入文字...",
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(178.w, 54.h),
+                  primary: Colors.black,
+                ),
+                child: Text("送出", style: TextStyle(fontSize: 28.sp,),),
+                onPressed: () {
+                  // TODO: Add post to db
+                  if (image == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text("請選擇相片"),
+                        action: SnackBarAction(label: "OK", onPressed: () => {}),
+                      ),
+                    );
+                  } 
+                  else if (_controller.text == "") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text("請輸入內文"),
+                        action: SnackBarAction(label: "OK", onPressed: () => {}),
+                      ),
+                    );
+                  }
+                  else {
+                    Navigator.pop(
+                      context,
+                      OnePost(
+                          name: "user",
+                          avatar: "assets/images/avatar.png",
+                          content: RichText(
+                            text: TextSpan(
+                              children: getClickableTextSpans(context, ["今天", "天氣", "真好"]),
+                            ),
+                          ),
+                          photo: image!,
+                      ),
+                    );
+                  }
+                },
+              ),
+              GestureDetector(
+                child: Text(
+                  "取消變更",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.grey,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                onTap: () => Navigator.pop(context),
+              ),
+              Row(
+                // TODO: Add onPressed function to each icon
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // photo icon
+                  InkWell(
+                    child: Icon(Icons.photo,size: 84.w,),
+                    onTap: () async {
+                      // TODO: Add backend to store uploaded image
+
+                      final ImagePicker picker = ImagePicker();
+                      final imageFromGallery =
+                          await picker.pickImage(source: ImageSource.gallery);
+                      setState(() {
+                        image = imageFromGallery;
+                      });
+                    },
+                  ),
+                  Icon(Icons.mic,size: 180.w,),
+                  Icon(Icons.keyboard,size: 84.w,),
+                ],
+              ),
             ],
           ),
-        ],
-      )
-    ),
-  );
+        ),
+      ),
+    );
   }
 }
