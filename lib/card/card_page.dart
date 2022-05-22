@@ -7,6 +7,15 @@ import 'package:famistory/card/select_page.dart';
 class CardPage extends StatelessWidget {
   const CardPage({Key? key}) : super(key: key);
 
+  final String photo = "assets/images/story.jpg";
+
+  SelectPage init(){
+    for(int i = 0; i < theme_num; i++){
+      chipselect[i] = 0;
+    }
+    return const SelectPage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,18 +24,37 @@ class CardPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("抽卡介面說明", style: TextStyle(fontSize: 28.sp),),
-              ElevatedButton(
-                onPressed: () {
+              SizedBox(
+                height: 200.h,
+                child: Center(child: Text("話題故事館", style: TextStyle(fontSize: 28.sp),)),
+              ),
+              Image.asset(photo),
+              SizedBox(
+                width: 300.w,
+                height: 160.h,
+                child: Center(
+                          child: Text("話題故事館可以藉由問問題的方式，來聊聊那些你從來沒聽過的故事呦!",
+                            style: TextStyle(fontSize: 14.sp),
+                            textAlign: TextAlign.center)),
+              ),
+              GestureDetector(
+                onTap: (){
                   Navigator.push(
                     context, MaterialPageRoute(
-                      builder: (context) => SelectPage(),
-                    ),
+                    builder: (context) => init(),
+                  ),
                   );
                 },
-                child: Text("開始抽卡"),
-              ),
-            ],
+                child: Card(
+                  elevation: 8,
+                  color: Colors.amber.shade300,
+                  child: SizedBox(
+                    width: 150.w,
+                    height: 50.w,
+                    child: Center(child: Text("開始遊玩", style: TextStyle(fontSize: 17.sp),)),
+                  )
+                ),
+              )],
           ),
         ),
       ),

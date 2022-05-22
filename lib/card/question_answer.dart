@@ -7,7 +7,7 @@ class ques_ans {
   ques_ans(this.title, this.question, this.answer);
 }
 
-var questions = {
+final questions = {
   '冷笑話': {
     '0': ques_ans('永不下雨', '哪一條街永不下雨?', '茉莉花，因為：好一朵美麗（沒力）的茉莉花'),
     '1': ques_ans('老婆最虛弱', '酷酷哥.酷帥哥.帥酷哥.請問哪一個人ㄉ老婆身體最虛弱?', '酷酷哥，因為他的老婆叫酷酷嫂'),
