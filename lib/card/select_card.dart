@@ -1,11 +1,16 @@
 // flutter
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:math';
 // my library
 import 'package:famistory/card/question_answer.dart';
 import 'package:famistory/card/show_answer.dart';
 
 Set themes = {};
+int card_num = 3;
+int subtitle_size = 10;
+Set <int> choosed = {};
+var rng = Random();
 
 class SelectCard extends StatefulWidget {
 
@@ -33,6 +38,22 @@ class _SelectCardState extends State<SelectCard> {
     if (idx == -1) {
       return {"選擇一個想問的故事"};
     }
+
+    if(_card_num > card_num) {
+      bool rechoose = true;
+      while (rechoose) {
+        idx = rng.nextInt(_card_num);
+        rechoose = false;
+        for (int ch in choosed) {
+          if (ch == idx) {
+            rechoose = true;
+            break;
+          }
+        }
+      }
+      choosed.add(idx);
+    }
+
     for(int i = 0; i < themes.length; i++){
       if(idx < _starting_pos.elementAt(i)){
         return {(idx - _starting_pos.elementAt(i-1)).toString(), themes.elementAt(i-1)};
@@ -48,7 +69,7 @@ class _SelectCardState extends State<SelectCard> {
         body: Center(
           child: ListView.separated(
                     padding: const EdgeInsets.all(8),
-                    itemCount: _card_num + 1 ,
+                    itemCount: card_num > _card_num ? _card_num + 1 : card_num + 1,
                     itemBuilder: (BuildContext context, int index) {
                                     return myCard(_get_theme(index-1));
                                   },
@@ -68,6 +89,15 @@ class myCard extends StatelessWidget {
     index = set.first;
     theme = set.last;
     isfirst = set.length;
+  }
+
+  Object _subtitleInShort(String s){
+    if(s.length < subtitle_size) {
+      return s;
+    }
+    else {
+      return s.substring(0, subtitle_size).padRight(subtitle_size + 3, '.');
+    }
   }
 
   @override
@@ -93,12 +123,13 @@ class myCard extends StatelessWidget {
     else{
       return Center(
         child: Card(
+          color: const Color(0xffffd66b),
           child: SizedBox(
             width: 340.w,
             height: 136.h,
             child: ListTile(
                 title: Text('${questions[theme]![index]?.title}'),
-                subtitle: Text('${questions[theme]![index]?.question}'),
+                subtitle: Text('$theme: ${_subtitleInShort(questions[theme]![index]!.question)}'),
                 onTap: () =>
                     Navigator.push(
                       context, MaterialPageRoute(

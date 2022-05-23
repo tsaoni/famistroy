@@ -6,6 +6,7 @@ import 'package:famistory/card/question_answer.dart';
 
 String theme = "";
 String index = "";
+bool micro_on = false;
 
 class ShowAnswer extends StatefulWidget {
 
@@ -22,10 +23,70 @@ class _ShowAnswerState extends State<ShowAnswer> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-        body: Center(
-            child: Text('${questions[theme]![index]?.answer}')
-        )
+        body: Column(
+          children: [
+            Center(
+              child:
+                SizedBox(
+                  width: 300.w, //MediaQuery.of(context).size.width,
+                  height: 100.h,
+                  child: Center(
+                        child: Text(questions[theme]![index]!.title,
+                                    style: TextStyle(fontSize: 28.sp),
+                                    textAlign: TextAlign.center,
+                                )
+                      )
+                )
+            ),
+            Center(
+              child:
+                SizedBox(
+                    width: 300.w,
+                    height: 100.h,
+                    child: Center(
+                        child: Text("可以試著說:\n${questions[theme]![index]!.question}",
+                          style: TextStyle(fontSize: 17.sp),
+                          textAlign: TextAlign.center,
+                        )
+                    )
+                )
+            ),
+            SizedBox(
+              width: 337.w,
+              height: 450.h,
+              child:
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Card(
+                        color: micro_on ? const Color(0xffffd66b): Colors.transparent,
+                        elevation: 0,
+                        child: SizedBox(
+                            width: 337.w,
+                            height: 283.h
+                        )
+                    )
+                  )
+            )
+       ]
+        ),
+        floatingActionButton: SizedBox(
+            width: 147.w,
+            height: 147.h,
+            child: FittedBox(
+                      child:
+                        FloatingActionButton(
+                            backgroundColor: Colors.white,
+                            foregroundColor: micro_on ? Colors.red:Colors.black,
+                            elevation: 5,
+                            onPressed: () => { setState(() => micro_on = !micro_on) },
+                            //tooltip: 'Increment',
+                            child: const Icon(Icons.mic_outlined, size: 48,),
+                        )
+                    )
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat
     );
   }
 }
