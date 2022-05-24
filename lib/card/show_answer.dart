@@ -30,11 +30,11 @@ class _ShowAnswerState extends State<ShowAnswer> {
             Center(
               child:
                 SizedBox(
-                  width: 300.w, //MediaQuery.of(context).size.width,
+                  width: 300.w,
                   height: 100.h,
                   child: Center(
                         child: Text(questions[theme]![index]!.title,
-                                    style: TextStyle(fontSize: 28.sp),
+                                    style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center,
                                 )
                       )
@@ -44,7 +44,7 @@ class _ShowAnswerState extends State<ShowAnswer> {
               child:
                 SizedBox(
                     width: 300.w,
-                    height: 100.h,
+                    height: 150.h,
                     child: Center(
                         child: Text("可以試著說:\n${questions[theme]![index]!.question}",
                           style: TextStyle(fontSize: 17.sp),
@@ -55,7 +55,7 @@ class _ShowAnswerState extends State<ShowAnswer> {
             ),
             SizedBox(
               width: 337.w,
-              height: 450.h,
+              height: 400.h,
               child:
                   Align(
                     alignment: Alignment.bottomCenter,

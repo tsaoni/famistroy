@@ -107,16 +107,17 @@ class myCard extends StatelessWidget {
         child: Card(
           color: Colors.transparent,
           elevation: 0,
-          child: SizedBox(
-            width: 340.w,
-            height: 200.h,
-            child: Align(
-                      alignment: Alignment.center,
-                      child: ListTile(
-                                title: Text(theme, style: TextStyle(fontSize: 28.sp) ),
-                              )
-                    ),
-          ),
+          child:
+              Center(
+                child: SizedBox(
+                  width: 340.w,
+                  height: 200.h,
+                  child:
+                      Center(
+                        child: ListTile(title: Text(theme, style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold) ),)
+                      )
+                  )
+              ),
         ),
       );
     }
@@ -128,8 +129,8 @@ class myCard extends StatelessWidget {
             width: 340.w,
             height: 136.h,
             child: ListTile(
-                title: Text('${questions[theme]![index]?.title}'),
-                subtitle: Text('$theme: ${_subtitleInShort(questions[theme]![index]!.question)}'),
+                title: Text('${questions[theme]![index]?.title}', style: TextStyle(fontSize: 28.sp) ),
+                subtitle: Text('\n$theme: ${_subtitleInShort(questions[theme]![index]!.question)}', style: TextStyle(fontSize: 17.sp) ),
                 onTap: () =>
                     Navigator.push(
                       context, MaterialPageRoute(

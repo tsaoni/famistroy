@@ -26,7 +26,7 @@ class CardPage extends StatelessWidget {
             children: [
               SizedBox(
                 height: 200.h,
-                child: Center(child: Text("話題故事館", style: TextStyle(fontSize: 28.sp),)),
+                child: Center(child: Text("話題故事館", style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),)),
               ),
               Image.asset(photo),
               SizedBox(
