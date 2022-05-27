@@ -37,8 +37,8 @@ class _ShowAnswerState extends State<ShowAnswer> {
                                     style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center,
                                 )
-                      )
-                )
+                      ),
+                ),
             ),
             Center(
               child:
@@ -80,7 +80,11 @@ class _ShowAnswerState extends State<ShowAnswer> {
                             backgroundColor: Colors.white,
                             foregroundColor: micro_on ? Colors.red:Colors.black,
                             elevation: 5,
-                            onPressed: () => { setState(() => micro_on = !micro_on) },
+                            onPressed: () async {
+                              setState(() {
+                                micro_on = !micro_on;
+                              });
+                            },
                             //tooltip: 'Increment',
                             child: const Icon(Icons.mic_outlined, size: 48,),
                         )

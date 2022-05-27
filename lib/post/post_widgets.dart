@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 
 class UserAvatar extends StatelessWidget {
@@ -98,29 +99,20 @@ class NewPostPage extends StatefulWidget {
 class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController _controller = TextEditingController();
   final List<String> exampleContent = <String>["今天", "天氣", "真好"];
-  final _soundPlayer = SoundPlayer();
-
+  final _soundRecorder = SoundRecorder();
   XFile? image;
 
   @override
   void initState() {
-    _soundPlayer.init();
+    _soundRecorder.init();
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _soundPlayer.dispose();
+    _soundRecorder.dispose();
     super.dispose();
-  }
-
-  Future play(String pathToAudio) async {
-    await _soundPlayer.play(pathToAudio);
-    setState(() {
-      _soundPlayer.init();
-      _soundPlayer.isPlaying;
-    });
   }
 
   @override
@@ -207,7 +199,21 @@ class _NewPostPageState extends State<NewPostPage> {
                       });
                     },
                   ),
-                  Icon(Icons.mic,size: 180.w,),
+                  InkWell(
+                    child: Icon(Icons.mic,size: 180.w,),
+                    onTap: () async {
+                      Directory tempDir = await path_provider.getTemporaryDirectory();
+                      String path = '${tempDir.path}/content.wav';
+                      await _soundRecorder.toggleRecording(path);
+                      if (!_soundRecorder.isRecording) {
+                          await Speech2Text().connect(path, (text) => _controller.text += text, "MTK_ch");
+                      }
+                      
+                      setState(() {
+                        _soundRecorder.isRecording;
+                      });
+                    },
+                  ),
                   Icon(Icons.keyboard,size: 84.w,),
                 ],
               ),
