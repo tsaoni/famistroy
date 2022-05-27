@@ -45,14 +45,14 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<!-- Why app needs gallery access? -->
+
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Select an image to post</string>
-	<!-- Why app needs access to camera? -->
+	
 	<key>NSCameraUsageDescription</key>
 	<string>Upload image from camera for screen background</string>
-	<!-- Why app needs microphone access? -->
+	
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Post videos</string>
+	<string>For Recording</string>
 </dict>
 </plist>

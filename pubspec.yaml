@@ -41,6 +41,9 @@ dependencies:
   persistent_bottom_nav_bar: ^4.0.2
   # for pick image from gallery
   image_picker: ^0.8.5+3
+  path_provider: ^2.0.10
+  permission_handler: ^9.2.0
+  flutter_sound: ^9.2.13
 
 dev_dependencies:
   flutter_test:

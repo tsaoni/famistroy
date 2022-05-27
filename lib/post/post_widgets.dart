@@ -1,10 +1,10 @@
 import 'dart:io';
+import 'package:famistory/post/service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:famistory/post/service.dart';
 
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -41,7 +41,7 @@ class OnePost extends StatelessWidget {
   final String name;
   final String avatar;
   final RichText content;
-  final XFile photo;
+  final String photo;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,8 @@ class OnePost extends StatelessWidget {
           padding: EdgeInsets.all(20.w),
           child: Column(
             children: [
-              Image.file(File(photo.path),),
+              // Image.file(File(photo.path),),
+              Image.asset(photo),
               SizedBox(height: 10.h,),
               content,
             ],
@@ -97,13 +98,29 @@ class NewPostPage extends StatefulWidget {
 class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController _controller = TextEditingController();
   final List<String> exampleContent = <String>["今天", "天氣", "真好"];
+  final _soundPlayer = SoundPlayer();
 
   XFile? image;
 
   @override
+  void initState() {
+    _soundPlayer.init();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
+    _soundPlayer.dispose();
     super.dispose();
+  }
+
+  Future play(String pathToAudio) async {
+    await _soundPlayer.play(pathToAudio);
+    setState(() {
+      _soundPlayer.init();
+      _soundPlayer.isPlaying;
+    });
   }
 
   @override
@@ -156,19 +173,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     );
                   }
                   else {
-                    Navigator.pop(
-                      context,
-                      OnePost(
-                          name: "user",
-                          avatar: "assets/images/avatar.png",
-                          content: RichText(
-                            text: TextSpan(
-                              children: getClickableTextSpans(context, ["今天", "天氣", "真好"]),
-                            ),
-                          ),
-                          photo: image!,
-                      ),
-                    );
+                    Navigator.pop(context);
                   }
                 },
               ),
