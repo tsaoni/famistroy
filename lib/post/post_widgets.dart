@@ -351,7 +351,7 @@ class _NewPostPageState extends State<NewPostPage> {
               String path = '${tempDir.path}/content.wav';
               await _soundRecorder.toggleRecording(path);
               if (!_soundRecorder.isRecording) {
-                  await Speech2Text().connect(path, (text) => _controller.text += text, "MTK_ch");
+                  await Speech2Text().connect(path, (text) => _controller.text += ('$text\n'), "MTK_ch");
               }      
               setState(() {
                 _soundRecorder.isRecording;

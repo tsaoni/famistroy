@@ -80,6 +80,7 @@ class _PostPageState extends State<PostPage> {
                           } 
                       ),
                   ).toList(),
+                  
                 ),
               ),
               photo: "assets/images/photo.png",
