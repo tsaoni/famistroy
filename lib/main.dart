@@ -56,19 +56,28 @@ class _MainPageState extends State<MainPage> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.photo_fill_on_rectangle_fill),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        icon: ImageIcon(
+          const AssetImage("assets/images/picture-polaroid.png"),
+          size: 42.w,
+        ),
+        activeColorPrimary: CupertinoColors.black,
+        inactiveColorPrimary: CupertinoColors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.chat_bubble_2),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        icon: ImageIcon(
+          const AssetImage("assets/images/conversation-chat-1-alternate.png"),
+          size: 58.w,
+        ),
+        activeColorPrimary: CupertinoColors.black,
+        inactiveColorPrimary: CupertinoColors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.person),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        icon: ImageIcon(
+          const AssetImage("assets/images/single-neutral.png"),
+          size: 42.w,
+        ),
+        activeColorPrimary: CupertinoColors.black,
+        inactiveColorPrimary: CupertinoColors.white,
       ),
     ];
   }
@@ -82,7 +91,7 @@ class _MainPageState extends State<MainPage> {
       items: _navBarsItems(),
       navBarHeight: 86.h,
       confineInSafeArea: true,
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFFFFD66B),
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: false,
