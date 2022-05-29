@@ -40,7 +40,7 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        minimum: EdgeInsets.all(8.w),
+        // minimum: EdgeInsets.all(8.w),
         child: ListView.separated(
           itemCount: 5,
           itemBuilder: (context, index) {
@@ -52,7 +52,7 @@ class _PostPageState extends State<PostPage> {
                   children: ["今天", "天氣", "真好"].map(
                     (word) => TextSpan(
                         text: word,
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Colors.black, fontSize: 17.sp),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             showDialog(
@@ -87,7 +87,7 @@ class _PostPageState extends State<PostPage> {
           },
           separatorBuilder: (BuildContext context, int index) => Divider(
             height: 50.h,
-            thickness: 1.h,
+            color: Colors.white,
           ),
         ),
       ),
@@ -95,8 +95,7 @@ class _PostPageState extends State<PostPage> {
         width: 65.w,
         height: 65.w,
         child: FittedBox(
-          child: FloatingActionButton(
-              child: const Icon(Icons.add),
+            child: FloatingActionButton(
               onPressed: () async {
                 final OnePost postContent = await Navigator.push(
                   context,
@@ -107,9 +106,16 @@ class _PostPageState extends State<PostPage> {
                 setState(() {
                   _contents.add(postContent);
                 });
-              }),
+              },
+              backgroundColor: Colors.white,
+              child: Icon(Icons.add, color: Colors.black, size: 40.w,),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100.r),
+                side: BorderSide(width: 4.w, color: const Color(0xFFFFD66B)),
+              ),
+            ),
+          ),
         ),
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
