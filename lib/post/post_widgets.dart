@@ -11,19 +11,23 @@ class UserAvatar extends StatelessWidget {
   const UserAvatar({
     Key? key,
     required this.avatar,
+    required this.size,
   }) : super(key: key);
 
   final String avatar;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      child: ClipOval(
-        child: Image.asset(
-          avatar,
-          fit: BoxFit.cover,
-          width: 80.w,
-          height: 80.h,
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CircleAvatar(
+        child: ClipOval(
+          child: Image.asset(
+            avatar,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
@@ -54,7 +58,7 @@ class _CommentsState extends State<Comments> {
           children: [
             Row(
               children: [
-                UserAvatar(avatar: widget.avatar),
+                UserAvatar(avatar: widget.avatar, size: 45.w,),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Text("user2", style: TextStyle(fontSize: 17.sp,),),
@@ -103,7 +107,7 @@ class _OnePostState extends State<OnePost> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(width: 20.w),
-              UserAvatar(avatar: widget.avatar),
+              UserAvatar(avatar: widget.avatar, size: 45.w,),
               SizedBox(width: 10.w),
               Text(widget.name, style: TextStyle(fontSize: 18.sp),),
             ],
