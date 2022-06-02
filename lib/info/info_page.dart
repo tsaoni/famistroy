@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:famistory/info/create_page.dart';
 import 'package:famistory/info/info_widget.dart';
-import 'package:famistory/post/service.dart';
+import 'package:famistory/services/service.dart';
 import 'package:famistory/widgets/widgets.dart';
 
 

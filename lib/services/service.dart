@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:permission_handler/permission_handler.dart';
@@ -181,4 +183,14 @@ class Speech2Text {
     var bytes = await file.readAsBytes();
     return bytes;
   }
+}
+
+Future<void> Copy2Clipboard(BuildContext context, String text) async {
+  await Clipboard.setData(ClipboardData(text: text));
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: const Text('已複製到剪貼簿'),
+      action: SnackBarAction(label: "OK", onPressed: () => {}),
+    ),
+  );
 }

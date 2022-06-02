@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:famistory/info/edit_personal_page.dart';
 import 'package:famistory/info/setting_page.dart';
 import 'package:famistory/post/post_widgets.dart';
-import 'package:famistory/post/service.dart';
+import 'package:famistory/services/service.dart';
 import 'package:famistory/widgets/widgets.dart';
 
 class GroupComponent extends StatefulWidget {
@@ -61,7 +61,9 @@ class _GroupComponentState extends State<GroupComponent> {
                 ],
               ),
               RoundedElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Copy2Clipboard(context, widget.code);
+                },
                 backgroundColor: yellow,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
