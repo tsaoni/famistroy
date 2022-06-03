@@ -42,6 +42,7 @@ class RoundedRectElevatedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+        elevation: 5,
         fixedSize: fixedSize,
         primary: backgroundColor,
         shape: RoundedRectangleBorder(
@@ -151,7 +152,7 @@ class OneTextInputField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: smallTextStyle),
-        SizedBox(height: 10.h,),
+        SizedBox(height: 5.h,),
         Container(
           decoration: BoxDecoration(
             border: Border.all(

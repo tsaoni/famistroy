@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:famistory/widgets/widgets.dart';
+import 'package:famistory/info/password_page.dart';
 import 'package:famistory/post/post_widgets.dart';
+import 'package:famistory/widgets/widgets.dart';
 
 class EditPersonalInfoPage extends StatefulWidget {
   const EditPersonalInfoPage({ Key? key }) : super(key: key);
@@ -67,7 +68,10 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                     
                     RoundedElevatedButtonWithBorder(
                       onPressed: () {
-                        // TODO: add change pwd page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ChangePasswordPage())
+                        );
                       },
                       backgroundColor: Colors.white,
                       borderColor: yellow,
@@ -85,6 +89,7 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
           
                     RoundedRectElevatedButton(
                       backgroundColor: yellow,
+                      radius: 10.r,
                       onPressed: () {
                         // TODO: Update the data
                       },
