@@ -179,8 +179,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   ),
                   SizedBox(height: 20.h,),
 
-                  const CancelTextButton(),
-
+                  const CancelTextButton(text: "取消變更",),
                 ],
               ),
             ),

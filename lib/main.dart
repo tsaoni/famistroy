@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -78,6 +79,9 @@ class _MainPageState extends State<MainPage> {
         ),
         activeColorPrimary: CupertinoColors.black,
         inactiveColorPrimary: CupertinoColors.white,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/info',
+        ),
       ),
     ];
   }

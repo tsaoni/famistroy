@@ -58,6 +58,7 @@ class RoundedElevatedButton extends StatelessWidget {
   const RoundedElevatedButton({
     Key? key,
     this.fixedSize,
+    this.elevated,
     required this.onPressed,
     required this.backgroundColor,
     required this.child,
@@ -67,6 +68,7 @@ class RoundedElevatedButton extends StatelessWidget {
   final Color backgroundColor;
   final Widget child;
   final Size? fixedSize;
+  final bool? elevated;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class RoundedElevatedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         fixedSize: fixedSize,
         primary: backgroundColor,
-        elevation: 5,
+        elevation: elevated == null ? 5 : 0,
         shape: StadiumBorder(),
       ),
       child: child,
@@ -118,13 +120,16 @@ class RoundedElevatedButtonWithBorder extends StatelessWidget {
 class CancelTextButton extends StatelessWidget {
   const CancelTextButton({
     Key? key,
+    required this.text
   }) : super(key: key);
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       child: Text(
-        "取消變更",
+        text,
         style: TextStyle(
           decoration: TextDecoration.underline,
           fontSize: 17.sp,
@@ -140,11 +145,13 @@ class OneTextInputField extends StatelessWidget {
   const OneTextInputField({
     Key? key,
     this.value,
+    this.controller,
     required this.title,
   }) : super(key: key);
 
   final String? value;
   final String title;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -162,16 +169,15 @@ class OneTextInputField extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.r)
           ),
           width: 260.w,
-          height: 58.h,
+          height: 42.h,
           child: TextField(
+            controller: controller,
             decoration: InputDecoration(
               hintText: value,
-
+              hintStyle: smallTextStyle,
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-                vertical: 13.h,
-              ),
+              // contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w,),
+              contentPadding: EdgeInsets.only(bottom: 10.h, left: 10.w)
             ),
           ),
         ),

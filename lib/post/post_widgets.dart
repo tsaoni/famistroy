@@ -3,6 +3,7 @@ import 'package:famistory/services/service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
@@ -191,7 +192,7 @@ class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController _controller = TextEditingController();
   final List<String> exampleContent = <String>["今天", "天氣", "真好"];
   final _soundRecorder = SoundRecorder();
-  XFile? image;
+  String? _image;
 
   final _visibility = [
     "全部人可見",
@@ -226,12 +227,11 @@ class _NewPostPageState extends State<NewPostPage> {
             children:[
               SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 100.h,),
                     // image pre-view
                     Container(
-                      child: image != null ? Image.file(File(image!.path)) : null,
+                      child: _image != null ? Image.file(File(_image!)) : null,
                     ),
                     SizedBox(height: 20.h,),
                     TextField(
@@ -243,6 +243,7 @@ class _NewPostPageState extends State<NewPostPage> {
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 30.w,),
                         hintText: "試著在文章的最後面，問問其他家人們對這事情有什麼想法吧！",
+                        hintMaxLines: 2,
                         hintStyle: const TextStyle(color: Colors.black26,),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.r),
@@ -266,9 +267,21 @@ class _NewPostPageState extends State<NewPostPage> {
                     final ImagePicker picker = ImagePicker();
                     final imageFromGallery =
                         await picker.pickImage(source: ImageSource.gallery);
-                    setState(() {
-                      image = imageFromGallery;
-                    });
+                    CroppedFile? croppedImage = await ImageCropper().cropImage(
+                      sourcePath: imageFromGallery!.path,
+                      aspectRatioPresets: [
+                        CropAspectRatioPreset.square,
+                        CropAspectRatioPreset.ratio3x2,
+                        CropAspectRatioPreset.original,
+                        CropAspectRatioPreset.ratio4x3,
+                        CropAspectRatioPreset.ratio16x9
+                      ],
+                    );
+                    if (croppedImage != null) {
+                      setState(() {
+                        _image = croppedImage.path;
+                      });
+                    }
                   },
                 ),
               ),
@@ -317,7 +330,7 @@ class _NewPostPageState extends State<NewPostPage> {
                       child: Text("發送", style: TextStyle(fontSize: 28.sp, color: Colors.black),),
                       onPressed: () {
                         // TODO: Add post to db
-                        if (image == null) {
+                        if (_image == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: const Text("請選擇相片"),

@@ -79,11 +79,11 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                       child: Text("變更密碼", style: smallTextStyle,),
                     ),
                 
-                    OneTextInputField(value: "王小明", title: "姓名",),
+                    const OneTextInputField(value: "王小明", title: "姓名",),
                     SizedBox(height: 20.h,),
-                    OneTextInputField(value: "1953/08/19", title: "生日",),
+                    const OneTextInputField(value: "1953/08/19", title: "生日",),
                     SizedBox(height: 20.h,),
-                    OneTextInputField(value: "男", title: "性別",),
+                    const OneTextInputField(value: "男", title: "性別",),
           
                     SizedBox(height: 20.h,),
           
@@ -93,13 +93,13 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                       onPressed: () {
                         // TODO: Update the data
                       },
-                      child: Text("儲存變更", style: largeTextStyle,),
                       fixedSize: Size(178.w, 54.h),
+                      child: Text("儲存變更", style: largeTextStyle,),
                     ),
           
                     SizedBox(height: 20.h,),
           
-                    const CancelTextButton(),
+                    const CancelTextButton(text: "取消變更",),
                   ],
                 ),
               ),
