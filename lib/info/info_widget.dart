@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:famistory/info/edit_personal_page.dart';
+import 'package:famistory/info/edit_page.dart';
 import 'package:famistory/info/setting_page.dart';
 import 'package:famistory/post/post_widgets.dart';
 import 'package:famistory/services/service.dart';

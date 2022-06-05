@@ -27,7 +27,7 @@ class UserAvatar extends StatelessWidget {
         child: ClipOval(
           child: Image.asset(
             avatar,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
           ),
         ),
       ),

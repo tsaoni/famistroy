@@ -1,12 +1,12 @@
 import 'dart:io' as io;
-
-import 'package:famistory/services/service.dart';
-import 'package:famistory/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+
+import 'package:famistory/services/service.dart';
+import 'package:famistory/widgets/widgets.dart';
 
 class CreatePage extends StatefulWidget {
   const CreatePage({ Key? key }) : super(key: key);
