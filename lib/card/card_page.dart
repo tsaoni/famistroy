@@ -7,7 +7,7 @@ import 'package:famistory/card/select_page.dart';
 class CardPage extends StatelessWidget {
   const CardPage({Key? key}) : super(key: key);
 
-  final String photo = "assets/images/story.jpg";
+  final String photo = "assets/images/famistory.png";
 
   SelectPage init(){
     for(int i = 0; i < theme_num; i++){
