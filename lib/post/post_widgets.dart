@@ -35,6 +35,28 @@ class UserAvatar extends StatelessWidget {
   }
 }
 
+class UserAvatarWithBorder extends StatelessWidget {
+  const UserAvatarWithBorder({
+    Key? key,
+    required this.avatar,
+    required this.size,
+  }) : super(key: key);
+
+  final String avatar;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 10.w, color: Colors.white,),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: UserAvatar(avatar: avatar, size: size),
+    );
+  }
+}
+
 class Comments extends StatefulWidget {
   const Comments({
     required this.avatar,

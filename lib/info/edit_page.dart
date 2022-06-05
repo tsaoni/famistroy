@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:famistory/info/password_page.dart';
 import 'package:famistory/post/post_widgets.dart';
 import 'package:famistory/widgets/widgets.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 
 class EditPersonalInfoPage extends StatefulWidget {
   const EditPersonalInfoPage({ Key? key }) : super(key: key);
