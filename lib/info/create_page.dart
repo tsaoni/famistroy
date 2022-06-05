@@ -266,14 +266,24 @@ class CreateSuccessfullyPage extends StatelessWidget {
         children: [
           Container(color: lightYellow,),
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 width: 348.w,
                 height: 221.h,
-                child: Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r),),
-                  color: yellow,
-                  elevation: 5,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        Color(0XFFFFBA7A),
+                        Color(0xFFFFDB5A),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20.r),
+                    boxShadow: kElevationToShadow[4],
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -303,6 +313,7 @@ class CreateSuccessfullyPage extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 30.h,),
               RoundedElevatedButton(
                 onPressed: () {
                   // Add routeAndNavigatorSettings in PersistentBottomNavBarItem

@@ -111,7 +111,7 @@ class _MainPageState extends State<MainPage> {
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),
       ),
-      navBarStyle: NavBarStyle.style2,
+      navBarStyle: NavBarStyle.style14,
     );
   }
 

@@ -31,11 +31,13 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                 alignment: Alignment.topCenter,
                 child: Column(
                   children: [
+                    SizedBox(height: 50.h,),
                     // Stack edit icon on the UserAvatar
                     SizedBox(
                       width: 171.w,
                       height: 171.w,
                       child: Stack(
+                        alignment: Alignment.center,
                         children: [
                           Container(
                             decoration: BoxDecoration(
@@ -66,6 +68,7 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                       ),
                     ),
                     
+                    SizedBox(height: 10.h,),
                     RoundedElevatedButtonWithBorder(
                       onPressed: () {
                         Navigator.push(
@@ -79,13 +82,14 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                       child: Text("變更密碼", style: smallTextStyle,),
                     ),
                 
+                    SizedBox(height: 20.h,),
                     const OneTextInputField(value: "王小明", title: "姓名",),
                     SizedBox(height: 20.h,),
                     const OneTextInputField(value: "1953/08/19", title: "生日",),
                     SizedBox(height: 20.h,),
                     const OneTextInputField(value: "男", title: "性別",),
           
-                    SizedBox(height: 20.h,),
+                    SizedBox(height: 50.h,),
           
                     RoundedRectElevatedButton(
                       backgroundColor: yellow,
