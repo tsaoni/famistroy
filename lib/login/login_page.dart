@@ -1,6 +1,7 @@
 import 'package:famistory/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/widgets.dart';
 
@@ -40,6 +41,15 @@ class LoginPage extends StatelessWidget {
                   );
                 },
                 child: Text("登入", style: smallTextStyle),
+              ),
+              InkWell(
+                  child: const Text('還沒建立帳號嗎? 註冊'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MainPage())
+                    );
+                  }
               )
             ],
           )

@@ -46,6 +46,7 @@ dependencies:
   permission_handler: ^9.2.0
   flutter_sound: ^9.2.13
   crypto: ^3.0.2
+  url_launcher: ^6.1.2
 
 dev_dependencies:
   flutter_test:
