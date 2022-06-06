@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart';
+import 'package:famistory/widgets/widgets.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -195,4 +197,15 @@ Future<void> Copy2Clipboard(BuildContext context, String text) async {
       action: SnackBarAction(label: "OK", onPressed: () => {}),
     ),
   );
+}
+
+class MyDialog extends StatelessWidget {
+  const MyDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("更新成功", style: largeTextStyle,),
+    );
+  }
 }

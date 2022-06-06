@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:famistory/widgets/widgets.dart';
 
@@ -146,33 +146,70 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   RoundedRectElevatedButton(
                     backgroundColor: yellow,
                     radius: 10.r,
-                    onPressed: () {
-                      // TODO:
-                      // fetch pwd from backend
-                      if (sha256.convert(utf8.encode(_oldPasswordController.text)) == sha256.convert(utf8.encode("Andy"))) {
-                        setState(() {
-                          _isValid = true;
-                        });
+                    onPressed: () async {
+                      var url = Uri.parse('http://140.116.245.146:8000/password');
+                      var response = await http.post(url,
+                        headers: {"Content-type": "application/json"}, 
+                        // TODO: get user id from a long-life class or varible
+                        body: jsonEncode({"uid": 1})
+                      );
+                      if (response.statusCode == 200) {
+                        final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
+                        if (sha256.convert(utf8.encode(_oldPasswordController.text)).toString() == decodedResponse["password"]) {
+                          setState(() {
+                            _isValid = true;
+                          });
+                        }
+                        else {
+                          setState(() {
+                            _isValid = false;
+                          });
+                        }
+                        if (_newPasswordController.text != _checkPasswordController.text) {
+                          setState(() {
+                            _areSame = false;
+                          });
+                        }
+                        else {
+                          setState(() {
+                            _areSame = true;
+                          });
+                        }
+                        if (_isValid && _areSame) {
+                          // update to backend
+                          final url = Uri.parse('http://140.116.245.146:8000/password');
+                          final response = await http.put(url,
+                            headers: {"Content-type": "application/json"},
+                            body: jsonEncode({
+                              "uid": 1,
+                              "password": sha256.convert(utf8.encode(_newPasswordController.text)).toString(),
+                            }),
+                          );
+                          Future.delayed(const Duration(milliseconds: 1), () {
+                            if (response.statusCode == 200) {
+                              ScaffoldMessenger.of(context)
+                                .showSnackBar(
+                                  const SnackBar(
+                                    content: Text("更新成功", textAlign: TextAlign.center,),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              Navigator.pop(context);
+                            
+                            }
+                            else {
+                              ScaffoldMessenger.of(context)
+                                .showSnackBar(
+                                  const SnackBar(
+                                    content: Text("更新失敗", textAlign: TextAlign.center,),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              throw Exception('Failed to update the password!');
+                            }
+                          });
+                        }
                       }
-                      else {
-                        setState(() {
-                          _isValid = false;
-                        });
-                      }
-                      if (_newPasswordController.text != _checkPasswordController.text) {
-                        setState(() {
-                          _areSame = false;
-                        });
-                      }
-                      else {
-                        setState(() {
-                          _areSame = true;
-                        });
-                      }
-                      if (_isValid && _areSame) {
-                        // update to db
-                      }
-                      // Navigator.pop(context);
                     },
                     fixedSize: Size(178.w, 54.h),
                     child: Text("儲存變更", style: largeTextStyle,),
