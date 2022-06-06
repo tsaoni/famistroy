@@ -1,3 +1,4 @@
+import 'package:famistory/login/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -152,7 +153,7 @@ class RegisterFormState extends State<RegisterForm> {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const MainPage())
+                        MaterialPageRoute(builder: (context) => const UploadPage())
                     );
                   },
                   child: Text("建立", style: smallTextStyle),
