@@ -48,6 +48,7 @@ class _SelectPageState extends State<SelectPage> {
                      alignment: const Alignment(0.5, 0.9),
                      child:
                            Row(
+                             mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ActionChip(
                                     elevation: 5,
@@ -87,6 +88,7 @@ class _SelectPageState extends State<SelectPage> {
                     child: Align(
                         alignment: const Alignment(0.5, -0.7),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                               ActionChip(
                                 elevation: 5,
