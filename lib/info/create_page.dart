@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,15 +10,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:famistory/services/service.dart';
 import 'package:famistory/widgets/widgets.dart';
 
-class CreatePage extends StatefulWidget {
-  const CreatePage({ Key? key }) : super(key: key);
-
-  @override
-  State<CreatePage> createState() => _CreatePageState();
-}
-
-class _CreatePageState extends State<CreatePage> {
+class CreatePage extends StatelessWidget {
+  CreatePage({Key? key}) : super(key: key);
   final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +37,7 @@ class _CreatePageState extends State<CreatePage> {
                       OneTextInputField(title: "加入家族", controller: _controller,),
                       SizedBox(height: 20.h,),
                       RoundedElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // TODO:
                           // 1. fetch group information from backend
                           // 2. checkout whether or not existing a group match the code
@@ -105,6 +102,7 @@ class CreateGroupPage extends StatefulWidget {
 class _CreateGroupPageState extends State<CreateGroupPage> {
   final TextEditingController _controller = TextEditingController();
   String? _image;
+  String _code = "";
 
   @override
   Widget build(BuildContext context) {
@@ -159,17 +157,27 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
                   RoundedRectElevatedButton(
                     backgroundColor: yellow,
-                    onPressed: () {
-                      // TODO:
-                      // 1. Validate form
-                      // 2. Update to backend
-                      // 3. Show update successfully dialog
-                      if (true) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CreateSuccessfullyPage(),),
-                        );
-                      }
+                    onPressed: () async {
+                      final url = Uri.parse("http://140.116.245.146:8000/group");
+                      final request = http.MultipartRequest("POST", url);
+                      request.fields["uid"] = "12345678";
+                      request.fields["fname"] = _controller.text;
+                      request.fields["fcnt"] = "1";
+                      request.files.add(await http.MultipartFile.fromPath("photo", _image!));
+                      
+                      
+                      request.send().then((response) async {
+                        final decodedResponse = jsonDecode(await response.stream.bytesToString());
+                        _code = decodedResponse["code"];
+                        Future.delayed(const Duration(microseconds: 10), () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateSuccessfullyPage(code: _code),
+                            ),
+                          );
+                        });
+                      });
                     },
                     radius: 10.r,
                     fixedSize: Size(130.w, 40.h),
@@ -187,14 +195,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 }
 
-class AskForJoinPage extends StatefulWidget {
-  const AskForJoinPage({ Key? key }) : super(key: key);
+class AskForJoinPage extends StatelessWidget {
+  const AskForJoinPage({Key? key}) : super(key: key);
 
-  @override
-  State<AskForJoinPage> createState() => _AskForJoinPageState();
-}
-
-class _AskForJoinPageState extends State<AskForJoinPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -255,9 +258,19 @@ class _AskForJoinPageState extends State<AskForJoinPage> {
   }
 }
 
-class CreateSuccessfullyPage extends StatelessWidget {
-  const CreateSuccessfullyPage({ Key? key }) : super(key: key);
+class CreateSuccessfullyPage extends StatefulWidget {
+  const CreateSuccessfullyPage({
+    Key? key,
+    required this.code
+  }) : super(key: key);
 
+  final String code;
+
+  @override
+  State<CreateSuccessfullyPage> createState() => _CreateSuccessfullyPageState();
+}
+
+class _CreateSuccessfullyPageState extends State<CreateSuccessfullyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -292,8 +305,7 @@ class CreateSuccessfullyPage extends StatelessWidget {
                       SizedBox(height: 20.h,),
                       RoundedElevatedButton(
                         onPressed: () {
-                          // TODO: generate a groupID
-                          Copy2Clipboard(context, "0ab4523b");
+                          Copy2Clipboard(context, widget.code);
                         },
                         fixedSize: Size(206.w, 40.h,),
                         elevated: false,
@@ -302,7 +314,7 @@ class CreateSuccessfullyPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              "邀請碼: 0ab4523b",
+                              "邀請碼: ${widget.code}",
                               style: smallTextStyle,
                             ),
                             const ImageIcon(AssetImage("assets/images/Icon-Artwork.png"), color: lightBlack,),

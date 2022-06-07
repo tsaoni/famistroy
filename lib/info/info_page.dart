@@ -108,7 +108,7 @@ class _InfoPageState extends State<InfoPage> {
               onPressed: () {
                 Navigator.push(
                   context, MaterialPageRoute(
-                    builder: (context) => const CreatePage()
+                    builder: (context) => CreatePage()
                   ),
                 );
               },
