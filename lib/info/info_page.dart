@@ -41,7 +41,6 @@ class _InfoPageState extends State<InfoPage> {
     });
   }
 
-  // TODO: display info depends on groups that user joined in 
   @override
   Widget build(BuildContext context) {
     return Scaffold(

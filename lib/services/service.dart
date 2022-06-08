@@ -16,6 +16,7 @@ class SoundPlayer {
   bool isPlaying = false;
 
   Future init() async {
+    print("sound player init");
     await _soundPlayer.openPlayer();
     _isInitialized = true;
   }

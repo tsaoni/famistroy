@@ -126,8 +126,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   ),
                   RoundedElevatedButtonWithBorder(
                     onPressed: () async {
-                      // TODO:
-                      // pick image from gallery
                       final ImagePicker picker = ImagePicker();
                       final imageFromGallery = 
                           await picker.pickImage(source: ImageSource.gallery);
@@ -135,10 +133,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                         sourcePath: imageFromGallery!.path,
                         aspectRatioPresets: [
                           CropAspectRatioPreset.square,
-                          CropAspectRatioPreset.ratio3x2,
-                          CropAspectRatioPreset.original,
-                          CropAspectRatioPreset.ratio4x3,
-                          CropAspectRatioPreset.ratio16x9
                         ],
                       );
                       if (croppedImage != null) {
@@ -164,7 +158,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       request.fields["fname"] = _controller.text;
                       request.fields["fcnt"] = "1";
                       request.files.add(await http.MultipartFile.fromPath("photo", _image!));
-                      
                       
                       request.send().then((response) async {
                         final decodedResponse = jsonDecode(await response.stream.bytesToString());
@@ -258,19 +251,14 @@ class AskForJoinPage extends StatelessWidget {
   }
 }
 
-class CreateSuccessfullyPage extends StatefulWidget {
+
+class CreateSuccessfullyPage extends StatelessWidget {
   const CreateSuccessfullyPage({
     Key? key,
     required this.code
   }) : super(key: key);
 
   final String code;
-
-  @override
-  State<CreateSuccessfullyPage> createState() => _CreateSuccessfullyPageState();
-}
-
-class _CreateSuccessfullyPageState extends State<CreateSuccessfullyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -305,7 +293,7 @@ class _CreateSuccessfullyPageState extends State<CreateSuccessfullyPage> {
                       SizedBox(height: 20.h,),
                       RoundedElevatedButton(
                         onPressed: () {
-                          Copy2Clipboard(context, widget.code);
+                          Copy2Clipboard(context, code);
                         },
                         fixedSize: Size(206.w, 40.h,),
                         elevated: false,
@@ -314,7 +302,7 @@ class _CreateSuccessfullyPageState extends State<CreateSuccessfullyPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              "邀請碼: ${widget.code}",
+                              "邀請碼: $code",
                               style: smallTextStyle,
                             ),
                             const ImageIcon(AssetImage("assets/images/Icon-Artwork.png"), color: lightBlack,),

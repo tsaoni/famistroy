@@ -18,14 +18,14 @@ class _PostPageState extends State<PostPage> {
   final _soundPlayer = SoundPlayer();
   @override
   void initState() {
-    _soundPlayer.init();
     super.initState();
+    // _soundPlayer.init();
   }
 
   @override
   void dispose() {
-    _soundPlayer.dispose();
     super.dispose();
+    _soundPlayer.dispose();
   }
 
   Future play(String pathToAudio) async {

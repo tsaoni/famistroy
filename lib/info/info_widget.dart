@@ -1,10 +1,49 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:famistory/info/info_page.dart';
 import 'package:famistory/services/service.dart';
 import 'package:famistory/widgets/widgets.dart';
+
+class Family {
+  const Family._({
+    required this.fid,
+    required this.fname,
+    required this.photo,
+    required this.type
+  });
+
+  final List<String> fid;
+  final List<String> fname;
+  final List<String> photo;
+  final List<String> type;
+
+  factory Family.fromJson(Map<String, dynamic> jsons) {
+    List<String> fid = [];
+    List<String> fname = [];
+    List<String> photo = [];
+    List<String> type = [];
+  
+    for (final family in jsons["groups"]) {
+      fid.add(family["fid"]);
+      fname.add(family["fname"]);
+      photo.add(
+        family["image"]["image"]
+      );
+      type.add(family["image"]["type"]);
+    }
+    return Family._(
+      fid: fid,
+      fname: fname,
+      photo: photo,
+      type: type
+    );
+  }
+}
 
 class GroupComponent extends StatefulWidget {
   const GroupComponent({
@@ -15,7 +54,7 @@ class GroupComponent extends StatefulWidget {
     required this.soundPlayer,
   }) : super(key: key);
 
-  final String image;
+  final Image image;
   final String groupName;
   final String code;
   final SoundPlayer soundPlayer;
@@ -42,11 +81,12 @@ class _GroupComponentState extends State<GroupComponent> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              widget.image,
-              width: 100.w,
-              height: 100.h,
-            ),
+            // Image.asset(
+            //   widget.image,
+            //   width: 100.w,
+            //   height: 100.h,
+            // ),
+            widget.image,
             SizedBox(width: 20.w,),
             Column(
               children: [
@@ -147,7 +187,7 @@ class InfoPageNavigationBar extends StatelessWidget {
   }
 }
 
-class InfoPageBody extends StatelessWidget {
+class InfoPageBody extends StatefulWidget {
   const InfoPageBody({
     required this.soundPlayer,
     Key? key,
@@ -156,19 +196,74 @@ class InfoPageBody extends StatelessWidget {
   final SoundPlayer soundPlayer;
 
   @override
+  State<InfoPageBody> createState() => _InfoPageBodyState();
+}
+
+class _InfoPageBodyState extends State<InfoPageBody> {
+
+  late Future<Family> _family; 
+
+  Future<Family> fetechFamilyInfo() async {
+    final url = Uri.parse("http://140.116.245.146:8000/group/12345678");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print(jsonDecode(utf8.decode(response.bodyBytes)));
+      return Family.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+    }
+    else {
+      throw Exception('Failed to fetch data from server');
+    }
+  }
+
+  @override
+  void initState() {
+    print("init");
+    super.initState();
+    _family = fetechFamilyInfo();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: 290.h, bottom: 110.h,),
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return GroupComponent(
-            image: "assets/images/photo.png",
-            groupName: "我們這一家",
-            code: "0ab4523",
-            soundPlayer: soundPlayer,
-          );
+      child: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            _family = fetechFamilyInfo();
+          });
         },
-        itemCount: 5,
+        child: FutureBuilder<Family>(
+          future: _family,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.fid.length,
+                itemBuilder: (context, index) {
+                  return GroupComponent(
+                    // image: "assets/images/avatar.png",
+                    image: Image.memory(
+                      base64Decode(snapshot.data!.photo[index]),
+                      width: 109.w,
+                      height: 109.w,
+                    ),
+                    groupName: snapshot.data!.fname[index],
+                    code: snapshot.data!.fid[index],
+                    soundPlayer: widget.soundPlayer,
+                  );
+                }
+              );
+            }
+            else if (snapshot.hasError) {
+              return Center(child: Text("${snapshot.error!}"));
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
       ),
     );
   }
@@ -199,7 +294,7 @@ class FloatingElevatedButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text("新增/加入家族", style: smallTextStyle,),
-                Icon(Icons.add, color: lightBlack,),
+                const Icon(Icons.add, color: lightBlack,),
               ],
             ),
           ),
