@@ -28,6 +28,8 @@ class _SelectCardState extends State<SelectCard> {
   int _card_num = 0;
 
   void _count_start(){
+    _starting_pos = {};
+    _card_num = 0;
     for(var t in themes){
       _starting_pos.add(_card_num);
       _card_num += questions[t]!.length;
@@ -36,6 +38,7 @@ class _SelectCardState extends State<SelectCard> {
 
   Set<String> _get_theme(int idx){
     if (idx == -1) {
+      choosed = {};
       return {"選擇一個想問的故事"};
     }
 
