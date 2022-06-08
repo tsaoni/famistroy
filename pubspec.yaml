@@ -48,6 +48,7 @@ dependencies:
   crypto: ^3.0.2
   url_launcher: ^6.1.2
   http: ^0.13.4
+  speech_to_text: ^5.5.0
 
 dev_dependencies:
   flutter_test:
