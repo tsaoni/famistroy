@@ -105,6 +105,7 @@ class OnePost extends StatefulWidget {
     required this.avatar,
     required this.content,
     required this.photo,
+    required this.likes,
     Key? key
   }): super(key: key);
 
@@ -112,6 +113,7 @@ class OnePost extends StatefulWidget {
   final String avatar;
   final RichText content;
   final String photo;
+  final int likes;
 
   @override
   State<OnePost> createState() => _OnePostState();
@@ -132,7 +134,18 @@ class _OnePostState extends State<OnePost> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(width: 20.w),
-              UserAvatar(avatar: widget.avatar, size: 45.w,),
+              SizedBox(
+                width: 45.w,
+                height: 45.w,
+                child: CircleAvatar(
+                  child: ClipOval(
+                    child: Image.memory(
+                      base64Decode(widget.avatar),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(width: 10.w),
               Text(widget.name, style: TextStyle(fontSize: 18.sp),),
             ],
@@ -151,23 +164,16 @@ class _OnePostState extends State<OnePost> {
                 child: Column(
                   children: [
                     // Image.file(File(photo.path),),
-                    Image.asset(widget.photo),
+                    Image.memory(
+                      base64Decode(widget.photo),
+                      width: 109.w,
+                      height: 109.w,
+                    ),
                     SizedBox(height: 10.h,),
                     widget.content,
                     
                     // liked
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Text("14 x "),
-                        InkWell(
-                          child: _hasLiked ? const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
-                          onTap: () => setState(() {
-                            _hasLiked = !_hasLiked;
-                          }) 
-                        ),
-                      ],
-                    ),
+                    LikesInformation(likes: widget.likes,),
                   ],
                 ),
               ),
@@ -202,6 +208,39 @@ class _OnePostState extends State<OnePost> {
         ],
       ),
     );                
+  }
+}
+
+class LikesInformation extends StatefulWidget {
+  const LikesInformation({
+    Key? key,
+    required this.likes
+  }) : super(key: key);
+
+  final int likes;
+
+  @override
+  State<LikesInformation> createState() => _LikesInformationState();
+}
+
+class _LikesInformationState extends State<LikesInformation> {
+  bool _hasLiked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text("${widget.likes} x  "),
+        InkWell(
+          child: _hasLiked ? const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
+          onTap: () => setState(() {
+            // TODO: Update likes to backend
+            _hasLiked = !_hasLiked;
+          }) 
+        ),
+      ],
+    );
   }
 }
 
