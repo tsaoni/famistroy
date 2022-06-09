@@ -197,14 +197,3 @@ Future<void> Copy2Clipboard(BuildContext context, String text) async {
     ),
   );
 }
-
-class MyDialog extends StatelessWidget {
-  const MyDialog({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text("更新成功", style: largeTextStyle,),
-    );
-  }
-}

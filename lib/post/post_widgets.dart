@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:famistory/services/service.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -284,8 +286,6 @@ class _NewPostPageState extends State<NewPostPage> {
                 child: InkWell(
                   child: Icon(Icons.photo, size: 84.w,),
                   onTap: () async {
-                    // TODO: Add backend to store uploaded image
-                  
                     final ImagePicker picker = ImagePicker();
                     final imageFromGallery =
                         await picker.pickImage(source: ImageSource.gallery);
@@ -293,10 +293,6 @@ class _NewPostPageState extends State<NewPostPage> {
                       sourcePath: imageFromGallery!.path,
                       aspectRatioPresets: [
                         CropAspectRatioPreset.square,
-                        CropAspectRatioPreset.ratio3x2,
-                        CropAspectRatioPreset.original,
-                        CropAspectRatioPreset.ratio4x3,
-                        CropAspectRatioPreset.ratio16x9
                       ],
                     );
                     if (croppedImage != null) {
@@ -324,6 +320,7 @@ class _NewPostPageState extends State<NewPostPage> {
                         borderRadius: BorderRadius.all(Radius.circular(20.r)),
                         shape: BoxShape.rectangle
                       ),
+                      // TODO: pass family names to widget and send their fid to backend
                       child: Center(
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton(
@@ -350,8 +347,7 @@ class _NewPostPageState extends State<NewPostPage> {
                         primary: const Color(0xFFFFD66B),
                       ),
                       child: Text("發送", style: TextStyle(fontSize: 28.sp, color: Colors.black),),
-                      onPressed: () {
-                        // TODO: Add post to db
+                      onPressed: () async {
                         if (_image == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -369,7 +365,19 @@ class _NewPostPageState extends State<NewPostPage> {
                           );
                         }
                         else {
-                          Navigator.pop(context);
+                          final url = Uri.parse("http://140.116.245.146:8000/post");
+                          final request = http.MultipartRequest("POST", url);
+                          request.fields["uid"] = "12345678";
+                          request.fields["content"] = _controller.text;
+                          request.fields["visibility"] = "0";
+                          request.files.add(await http.MultipartFile.fromPath("photo", _image!));
+                          request.send().then((response) async {
+                            print(jsonDecode(await response.stream.bytesToString()));
+                          });
+                          Future.delayed(
+                            const Duration(milliseconds: 100),
+                            () => Navigator.pop(context)
+                          );
                         }
                       },
                     ),
@@ -390,7 +398,7 @@ class _NewPostPageState extends State<NewPostPage> {
               String path = '${tempDir.path}/content.wav';
               await _soundRecorder.toggleRecording(path);
               if (!_soundRecorder.isRecording) {
-                  await Speech2Text().connect(path, (text) => _controller.text += ('$text\n'), "MTK_ch");
+                await Speech2Text().connect(path, (text) => _controller.text += ('$text\n'), "Minnan");
               }      
               setState(() {
                 _soundRecorder.isRecording;
