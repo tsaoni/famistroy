@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' as io;
 import 'package:famistory/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-
 
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -59,50 +58,221 @@ class UserAvatarWithBorder extends StatelessWidget {
   }
 }
 
+class Comment {
+  const Comment._({
+    required this.cid,
+    required this.avatar,
+    required this.uname,
+    required this.comment,
+  });
+
+  final List<String> cid;
+  final List<String> avatar;
+  final List<String> uname;
+  final List<String> comment;
+
+  factory Comment.fromJson(Map<String, dynamic> jsons) {
+    List<String> cid = [];
+    List<String> avatar = [];
+    List<String> uname = [];
+    List<String> c = [];
+
+    for (final comment in jsons["comments"]) {
+      cid.add(comment["cid"]);
+      avatar.add(comment["avatar"]["image"]);
+      uname.add(comment["uname"]);
+      c.add(comment["comment"]);
+    }
+
+    return Comment._(cid: cid, avatar: avatar, uname: uname, comment: c);
+  }
+}
+
 class Comments extends StatefulWidget {
   const Comments({
-    required this.avatar,
-    required this.comment,
-    Key? key
+    Key? key,
+    required this.aid
   }) : super(key: key);
 
-  final String avatar;
-  final String comment;
+  final String aid;
 
   @override
   State<Comments> createState() => _CommentsState();
 }
 
 class _CommentsState extends State<Comments> {
+
+  final TextEditingController _controller = TextEditingController();
+  late Future<Comment> _comment;
+  bool _hasComments = false;
+  bool _needExpand = false;
+
+
+  Future<Comment> _fetchCommentInfo() async {
+    final url = Uri.parse("http://140.116.245.146:8000/${widget.aid}/comments");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      // print(jsonDecode(utf8.decode(response.bodyBytes)));
+      return Comment.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+    }
+    else {
+      throw Exception('Failed to fetch data from server');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _comment = _fetchCommentInfo();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30.w),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                UserAvatar(avatar: widget.avatar, size: 45.w,),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Text("user2", style: TextStyle(fontSize: 17.sp,),),
+    _comment = _fetchCommentInfo();
+    return Column(
+        children: [
+          FutureBuilder<Comment>(
+            future: _comment,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data!.cid.isNotEmpty) {
+                  _hasComments = true;
+                  if (snapshot.data!.cid.length > 1) {
+                    _needExpand = true;
+                  }
+                }
+                // TRICK: ListView need a height constraint from a parent widget
+                return SizedBox(
+                  height: _hasComments ? (_needExpand ? 200.h : 100.h) : 1.h,
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.cid.length,
+                    itemBuilder: (context, index) {
+                      return OneComment(
+                        uname: snapshot.data!.uname[index],
+                        avatar: snapshot.data!.avatar[index],
+                        comment: snapshot.data!.comment[index]
+                      );
+                    }
+                  ),
+                );
+              }
+              else if (snapshot.hasError) {
+                return Center(child: Text("${snapshot.error}"),);
+              }
+              return const CircularProgressIndicator();
+            }
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.h,),
+            child: SizedBox(
+              width: 291.w,
+              height: 41.h,
+              child: Center(
+                child: TextField(
+                  controller: _controller,
+                  onSubmitted: (text) async {
+                    // TODO: get user infomation from a long-life class or log
+                    final url = Uri.parse("http://140.116.245.146:8000/comments");
+                    final response = await http.post(url, 
+                      headers: {"Content-type": "application/json"}, 
+                      body: jsonEncode({
+                        "uid": "23456789",
+                        "aid": widget.aid,
+                        "comment": text,
+                      })
+                    );
+                    _controller.clear();
+
+                    if (response.statusCode == 200) {
+                      // final res = jsonDecode(utf8.decode(response.bodyBytes));
+                      // print(res);
+                    }
+                    else {
+                      throw Exception("Failed to write the comment");
+                    }
+
+                    setState(() {
+                        
+                    });
+                  },
+                  textAlignVertical: TextAlignVertical.center,
+                  textAlign: TextAlign.start,
+                  // controller: _controller,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 30.w),
+                    hintText: "有什麼話想說的嗎？",
+                    hintStyle: const TextStyle(color: Colors.black26),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.r),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
                 ),
-              ],
+              ),
             ),
-            Center(child: Text(widget.comment, style: TextStyle(fontSize: 17.sp,),)),
-            SizedBox(height: 10.h,),
-          ],
-        ),
-      ),
+          ),
+        ],
     );
   }
 }
 
-class OnePost extends StatefulWidget {
+class OneComment extends StatelessWidget {
+  const OneComment({
+    required this.uname,
+    required this.avatar,
+    required this.comment,
+    Key? key
+  }) : super(key: key);
+
+  final String uname;
+  final String avatar;
+  final String comment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            SizedBox(width: 20.w,),
+            SizedBox(
+              width: 45.w,
+              height: 45.w,
+              child: CircleAvatar(
+                child: ClipOval(
+                  child: Image.memory(
+                    base64Decode(avatar),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(uname, style: TextStyle(fontSize: 17.sp,),),
+            ),
+          ],
+        ),
+        Center(child: Text(comment, style: TextStyle(fontSize: 17.sp,),)),
+        SizedBox(height: 10.h,),
+      ],
+    );
+  }
+}
+
+class OnePost extends StatelessWidget {
   const OnePost({
     required this.name,
     required this.avatar,
+    required this.aid,
     required this.content,
     required this.photo,
     required this.likes,
@@ -111,16 +281,10 @@ class OnePost extends StatefulWidget {
 
   final String name;
   final String avatar;
+  final String aid;
   final RichText content;
   final String photo;
   final int likes;
-
-  @override
-  State<OnePost> createState() => _OnePostState();
-}
-
-class _OnePostState extends State<OnePost> {
-  bool _hasLiked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -140,14 +304,14 @@ class _OnePostState extends State<OnePost> {
                 child: CircleAvatar(
                   child: ClipOval(
                     child: Image.memory(
-                      base64Decode(widget.avatar),
+                      base64Decode(avatar),
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
               ),
               SizedBox(width: 10.w),
-              Text(widget.name, style: TextStyle(fontSize: 18.sp),),
+              Text(name, style: TextStyle(fontSize: 18.sp),),
             ],
           ),
           SizedBox(height: 10.h,),
@@ -165,49 +329,25 @@ class _OnePostState extends State<OnePost> {
                   children: [
                     // Image.file(File(photo.path),),
                     Image.memory(
-                      base64Decode(widget.photo),
-                      width: 109.w,
-                      height: 109.w,
+                      base64Decode(photo),
+                      width: 173.w,
+                      height: 173.w,
                     ),
                     SizedBox(height: 10.h,),
-                    widget.content,
+                    content,
                     
                     // liked
-                    LikesInformation(likes: widget.likes,),
+                    LikesInformation(likes: likes,),
                   ],
                 ),
               ),
             ),
           ),
           SizedBox(height: 10.h,),
-          Comments(avatar: widget.avatar, comment: "台北這邊就已經很冷了...",),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.h,),
-            child: SizedBox(
-              width: 291.w,
-              height: 41.h,
-              child: Center(
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.center,
-                  textAlign: TextAlign.start,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 30.w),
-                    hintText: "有什麼話想說的嗎？",
-                    hintStyle: const TextStyle(color: Colors.black26),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.r),
-                      borderSide: BorderSide.none,
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          Comments(aid: aid),
         ],
       ),
-    );                
+    ); 
   }
 }
 
@@ -240,6 +380,63 @@ class _LikesInformationState extends State<LikesInformation> {
           }) 
         ),
       ],
+    );
+  }
+}
+
+class WordCard extends StatefulWidget {
+  const WordCard({
+    Key? key,
+    required this.word,
+  }) : super(key: key);
+
+  final String word;
+
+  @override
+  State<WordCard> createState() => _WordCardState();
+}
+
+class _WordCardState extends State<WordCard> {
+  final _soundPlayer = SoundPlayer();
+  
+  @override
+  void initState() {
+    super.initState();
+    _soundPlayer.init();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _soundPlayer.dispose();
+  }
+
+  Future play(String pathToAudio) async {
+    await _soundPlayer.play(pathToAudio);
+    setState(() {
+      _soundPlayer.init();
+      _soundPlayer.isPlaying;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Container(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(widget.word),
+            InkWell(
+              child: Icon(Icons.volume_up_rounded),
+              onTap: () async {
+                await Text2Speech().connect(play, widget.word, "female");
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -294,7 +491,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     SizedBox(height: 100.h,),
                     // image pre-view
                     Container(
-                      child: _image != null ? Image.file(File(_image!)) : null,
+                      child: _image != null ? Image.file(io.File(_image!)) : null,
                     ),
                     SizedBox(height: 20.h,),
                     TextField(
@@ -411,11 +608,11 @@ class _NewPostPageState extends State<NewPostPage> {
                           request.fields["visibility"] = "0";
                           request.files.add(await http.MultipartFile.fromPath("photo", _image!));
                           request.send().then((response) async {
-                            print(jsonDecode(await response.stream.bytesToString()));
+                            // print(jsonDecode(await response.stream.bytesToString()));
                           });
                           Future.delayed(
                             const Duration(milliseconds: 100),
-                            () => Navigator.pop(context)
+                            () => Navigator.pop(context, true)
                           );
                         }
                       },
@@ -433,7 +630,7 @@ class _NewPostPageState extends State<NewPostPage> {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () async {
-              Directory tempDir = await path_provider.getTemporaryDirectory();
+              io.Directory tempDir = await path_provider.getTemporaryDirectory();
               String path = '${tempDir.path}/content.wav';
               await _soundRecorder.toggleRecording(path);
               if (!_soundRecorder.isRecording) {

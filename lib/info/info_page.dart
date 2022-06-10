@@ -19,28 +19,6 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
-  final _soundPlayer = SoundPlayer();
-  
-  @override
-  void initState() {
-    _soundPlayer.init();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _soundPlayer.dispose();
-    super.dispose();
-  }
-
-  Future play(String pathToAudio) async {
-    await _soundPlayer.play(pathToAudio);
-    setState(() {
-      _soundPlayer.init();
-      _soundPlayer.isPlaying;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +80,7 @@ class _InfoPageState extends State<InfoPage> {
                 ],
               ),
             ),
-            InfoPageBody(soundPlayer: _soundPlayer,),
+            const InfoPageBody(),
             FloatingElevatedButton(
               onPressed: () {
                 Navigator.push(

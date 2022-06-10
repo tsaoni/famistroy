@@ -189,17 +189,38 @@ class InfoPageNavigationBar extends StatelessWidget {
 
 class InfoPageBody extends StatefulWidget {
   const InfoPageBody({
-    required this.soundPlayer,
     Key? key,
   }) : super(key: key);
-
-  final SoundPlayer soundPlayer;
 
   @override
   State<InfoPageBody> createState() => _InfoPageBodyState();
 }
 
 class _InfoPageBodyState extends State<InfoPageBody> {
+
+  final _soundPlayer = SoundPlayer();
+  
+  @override
+  void initState() {
+    print("init");
+    super.initState();
+    _soundPlayer.init();
+    _family = fetechFamilyInfo();
+  }
+
+  @override
+  void dispose() {
+    _soundPlayer.dispose();
+    super.dispose();
+  }
+
+  Future play(String pathToAudio) async {
+    await _soundPlayer.play(pathToAudio);
+    setState(() {
+      _soundPlayer.init();
+      _soundPlayer.isPlaying;
+    });
+  }
 
   late Future<Family> _family; 
 
@@ -215,17 +236,6 @@ class _InfoPageBodyState extends State<InfoPageBody> {
     }
   }
 
-  @override
-  void initState() {
-    print("init");
-    super.initState();
-    _family = fetechFamilyInfo();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +263,7 @@ class _InfoPageBodyState extends State<InfoPageBody> {
                     ),
                     groupName: snapshot.data!.fname[index],
                     code: snapshot.data!.fid[index],
-                    soundPlayer: widget.soundPlayer,
+                    soundPlayer: _soundPlayer,
                   );
                 }
               );

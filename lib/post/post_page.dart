@@ -67,7 +67,6 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final _soundPlayer = SoundPlayer();
   late Future<Post> _post;
 
   Future<Post> _fetchPostInfo() async {
@@ -86,25 +85,16 @@ class _PostPageState extends State<PostPage> {
   void initState() {
     super.initState();
     _post = _fetchPostInfo();
-    _soundPlayer.init();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _soundPlayer.dispose();
-  }
-
-  Future play(String pathToAudio) async {
-    await _soundPlayer.play(pathToAudio);
-    setState(() {
-      _soundPlayer.init();
-      _soundPlayer.isPlaying;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    _post = _fetchPostInfo();
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
@@ -123,6 +113,7 @@ class _PostPageState extends State<PostPage> {
                   return OnePost(
                     name: snapshot.data!.uname[index],
                     avatar: snapshot.data!.avatar[index],
+                    aid: snapshot.data!.aid[index],
                     photo: snapshot.data!.photo[index],
                     likes: snapshot.data!.likes[index],
                     content: RichText(
@@ -136,26 +127,9 @@ class _PostPageState extends State<PostPage> {
                                   showDialog(
                                     context: context,
                                     barrierColor: Colors.black12,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        content: Container(
-                                          color: Colors.white,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(word),
-                                              InkWell(
-                                                child: Icon(Icons.volume_up_rounded),
-                                                onTap: () async {
-                                                  await Text2Speech().connect(play, word, "female");
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                  });
-                                } 
+                                    builder: (context) => WordCard(word: word)
+                                  );
+                                }
                             ),
                         ).toList(),
                       ),
@@ -182,19 +156,24 @@ class _PostPageState extends State<PostPage> {
         child: FittedBox(
             child: FloatingActionButton(
               onPressed: () async {
-                Navigator.push(
+                final _hasNewPost = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const NewPostPage(),
                   ),
                 );
+                if (_hasNewPost) {
+                  setState(() {
+                    
+                  });
+                }
               },
               backgroundColor: Colors.white,
-              child: Icon(Icons.add, color: Colors.black, size: 40.w,),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100.r),
                 side: BorderSide(width: 4.w, color: const Color(0xFFFFD66B)),
               ),
+              child: Icon(Icons.add, color: Colors.black, size: 40.w,),
             ),
           ),
         ),
@@ -202,3 +181,4 @@ class _PostPageState extends State<PostPage> {
     );
   }
 }
+
