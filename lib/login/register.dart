@@ -21,9 +21,27 @@ class RegisterFormState extends State<RegisterForm> {
   // date picker
   DateTime selectedDate = DateTime.now();
   String dropdownValue = '男';
+  TextEditingController dateinput = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+        builder: (context, child) {
+          return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                  primary: Color(0xFFFFD66B), // header background color
+                  onPrimary: Colors.black, // header text color
+                  onSurface: Colors.black, // body text color
+                ),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    primary: const Color(0xFFFFD66B), // button text color
+                  ),
+                ),
+              ),
+            child: child!,
+          );
+        },
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(2015, 8),
@@ -31,6 +49,8 @@ class RegisterFormState extends State<RegisterForm> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        // String formattedDate = selectedDate.weekday.toString();
+        dateinput.text = selectedDate.toString();
       });
     }
   }
@@ -38,7 +58,10 @@ class RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
 
+    var isEmpty = true;
+
     return Scaffold(
+      backgroundColor: const Color.fromARGB(51, 255, 220, 107),
       body: Form(
         key: _formKey,
         child: Column(
@@ -55,28 +78,28 @@ class RegisterFormState extends State<RegisterForm> {
               height: 81.h,
               child: const Align(
                 alignment: Alignment.bottomCenter,
-                child: OneTextInputField(title: '帳號',)
+                child: LoginInputField(title: '帳號',)
               )
             ),
             SizedBox(
                 height: 81.h,
                 child: const Align(
                     alignment: Alignment.bottomCenter,
-                    child: OneTextInputField(title: '密碼',)
+                    child: LoginInputField(title: '密碼',)
                 )
             ),
             SizedBox(
                 height: 81.h,
                 child: const Align(
                     alignment: Alignment.bottomCenter,
-                    child: OneTextInputField(title: '再輸入一次密碼',)
+                    child: LoginInputField(title: '再輸入一次密碼',)
                 )
             ),
             SizedBox(
                 height: 81.h,
                 child: const Align(
                     alignment: Alignment.bottomCenter,
-                    child: OneTextInputField(title: '姓名',)
+                    child: LoginInputField(title: '姓名',)
                 )
             ),
             SizedBox(
@@ -86,29 +109,37 @@ class RegisterFormState extends State<RegisterForm> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text("生日", style: TextStyle(
-                      fontSize: 20.sp, fontWeight: FontWeight.bold)
+                      fontSize: 18.sp, color: Colors.grey)
                     )
                 )
             ),
             Align(
-              alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 150.w,
-                  height: 70.h,
-                      child: Row(
-                        children: [
-                          Text("${selectedDate.toLocal()}".split(' ')[0]),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(const Color(0xffffd66b)),
-                            ),
-                            onPressed: () => _selectDate(context),
-                            child: const Text('選擇'),
-                          )
-                        ]
-                      )
-                )
+              alignment: Alignment.center,
+              child: Container(
+                  width: 260.w,
+                  height: 42.h,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: grey,
+                        width: 3.w,
+                      ),
+                      borderRadius: BorderRadius.circular(10.r)
+                  ),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: TextField(
+                      controller: dateinput,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                      ),//editing controller of this TextField
+                      readOnly: true, //set it true, so that user will not able to edit text
+                      onTap: () => _selectDate(context),
+                    )
+                  )
+              ),
             ),
+            SizedBox(height: 10.h,),
             SizedBox(
                 width: 250.w,
                 height: 25.h,
@@ -116,31 +147,38 @@ class RegisterFormState extends State<RegisterForm> {
                 Align(
                     alignment: Alignment.topLeft,
                     child: Text("性別", style: TextStyle(
-                        fontSize: 20.sp, fontWeight: FontWeight.bold)
+                        fontSize: 18.sp, color: Colors.grey)
                     )
                 )
             ),
             SizedBox(
-                height: 70.h,
+                width: 260.w,
+                height: 42.h,
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: DropdownButton<String>(
+                  child: DropdownButtonFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    hint: Text('Please select group'),
+                    isExpanded: true,
+                    isDense: true,
                     value: dropdownValue,
-                    elevation: 16,
-                    style: const TextStyle(color: Colors.black),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                      });
-                    },
-                    items: <String>['男', '女']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+                    items: const ['男', '女'].map((item) {
+                      return DropdownMenuItem(
+                        value: item,
+                        child: Text(item),
                       );
                     }).toList(),
-                  )
+                    onChanged: (selectedItem) => setState(
+                          () {
+                        dropdownValue = selectedItem.toString();
+                      },
+                    ),
+                  ),
                   )
             ),
             SizedBox(

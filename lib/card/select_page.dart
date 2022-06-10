@@ -33,7 +33,10 @@ class _SelectPageState extends State<SelectPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Stack(
+      children: [
+        Container(color: const Color.fromARGB(51, 255, 220, 107),),
+        Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -142,6 +145,8 @@ class _SelectPageState extends State<SelectPage> {
           ],
         ),
       ),
+    ]
+    )
     );
   }
 }

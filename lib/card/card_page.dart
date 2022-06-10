@@ -19,6 +19,7 @@ class CardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(51, 255, 220, 107),
       body: SafeArea(
         child: Center(
           child: Column(

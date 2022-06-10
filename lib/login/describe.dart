@@ -13,6 +13,7 @@ class DescribePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(51, 255, 220, 107),
         body: Center(
             child: Column(
               children: <Widget>[

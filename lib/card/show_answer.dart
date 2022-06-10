@@ -77,58 +77,63 @@ class _ShowAnswerState extends State<ShowAnswer> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        body: Column(
-          children: [
-            Center(
-              child:
-                SizedBox(
-                  width: 300.w,
-                  height: 100.h,
-                  child: Center(
-                        child: Text(questions[theme]![index]!.title,
-                                    style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
-                                )
-                      ),
+        body: Stack(
+            children: [
+              Container(color: const Color.fromARGB(51, 255, 220, 107),),
+              Column(
+              children: [
+                Center(
+                  child:
+                    SizedBox(
+                      width: 300.w,
+                      height: 100.h,
+                      child: Center(
+                            child: Text(questions[theme]![index]!.title,
+                                        style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.center,
+                                    )
+                          ),
+                    ),
                 ),
-            ),
-            Center(
-              child:
-                SizedBox(
-                    width: 300.w,
-                    height: 150.h,
-                    child: Center(
-                        child: Text("可以試著說:\n${questions[theme]![index]!.question}",
-                          style: TextStyle(fontSize: 17.sp),
-                          textAlign: TextAlign.center,
+                Center(
+                  child:
+                    SizedBox(
+                        width: 300.w,
+                        height: 150.h,
+                        child: Center(
+                            child: Text("可以試著說:\n${questions[theme]![index]!.question}",
+                              style: TextStyle(fontSize: 17.sp),
+                              textAlign: TextAlign.center,
+                            )
                         )
                     )
-                )
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: yellow,
-                    borderRadius: BorderRadius.circular(20.r)
-                  ),
-                  // color: yellow,
-                  width: 337.w,
-                  height: 283.h,
-                  child: TextField(
-                    controller: _controller,
-                    maxLines: 100,
-                    decoration: InputDecoration(
-                      hintStyle: smallTextStyle,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                    ),
-                  ),
                 ),
-              ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: yellow,
+                        borderRadius: BorderRadius.circular(20.r)
+                      ),
+                      // color: yellow,
+                      width: 337.w,
+                      height: 283.h,
+                      child: TextField(
+                        controller: _controller,
+                        maxLines: 100,
+                        decoration: InputDecoration(
+                          hintStyle: smallTextStyle,
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+           ]
             )
-       ]
+            ]
         ),
         floatingActionButton: SizedBox(
             width: 147.w,

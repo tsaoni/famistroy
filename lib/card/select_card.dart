@@ -69,17 +69,22 @@ class _SelectCardState extends State<SelectCard> {
   Widget build(BuildContext context) {
     _count_start();
     return Scaffold(
-        body: Center(
-          child: ListView.separated(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: card_num > _card_num ? _card_num + 1 : card_num + 1,
-                    itemBuilder: (BuildContext context, int index) {
-                                    return myCard(_get_theme(index-1));
-                                  },
-                    separatorBuilder: (BuildContext context, int index) => const Divider(),
-          )
+        body: Stack(
+          children: [
+            Container(color: const Color.fromARGB(51, 255, 220, 107),),
+            Center(
+              child: ListView.separated(
+                        padding: const EdgeInsets.all(8),
+                        itemCount: card_num > _card_num ? _card_num + 1 : card_num + 1,
+                        itemBuilder: (BuildContext context, int index) {
+                                        return myCard(_get_theme(index-1));
+                                      },
+                        separatorBuilder: (BuildContext context, int index) => const Divider(),
+              )
+            )
+          ]
         )
-      );
+    );
   }
 }
 

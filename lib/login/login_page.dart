@@ -17,6 +17,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
       return Scaffold(
+        backgroundColor: const Color.fromARGB(51, 255, 220, 107),
         body: Center(
           child: Column(
             children: <Widget>[
@@ -30,9 +31,11 @@ class LoginPage extends StatelessWidget {
               Text("登入帳號", style: TextStyle(
                 fontSize: 28.sp, fontWeight: FontWeight.bold),),
               SizedBox(width: 3.w, height: 30.h,),
-              const OneTextInputField(title: '帳號',),
+              const LoginInputField(
+                title: '帳號',
+                ),
               SizedBox(width: 3.w, height: 20.h,),
-              const OneTextInputField(title: '密碼',),
+              const LoginInputField(title: '密碼',),
               SizedBox(width: 3.w, height: 68.h,),
               RoundedRectElevatedButton(
                 backgroundColor: const Color(0xffffd66b),
