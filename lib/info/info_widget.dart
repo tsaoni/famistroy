@@ -225,7 +225,7 @@ class _InfoPageBodyState extends State<InfoPageBody> {
   late Future<Family> _family; 
 
   Future<Family> fetechFamilyInfo() async {
-    final url = Uri.parse("http://140.116.245.146:8000/group/12345678");
+    final url = Uri.parse("http://140.116.245.146:8000/group/uid/12345678");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       print(jsonDecode(utf8.decode(response.bodyBytes)));

@@ -42,12 +42,38 @@ class CreatePage extends StatelessWidget {
                           // 1. fetch group information from backend
                           // 2. checkout whether or not existing a group match the code
                           // 3. redirect to new page for asking join to the group if exists
-                          if (true) {
-                            _controller.clear();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const AskForJoinPage())
-                            );
+                          
+                          final url = Uri.parse("http://140.116.245.146:8000/group/fid/${_controller.text}");
+                          final response = await http.get(url);
+
+                          if (response.statusCode == 200) {
+                            final res = jsonDecode(utf8.decode(response.bodyBytes));
+                            if (res["status"] == "OK") {
+                              _controller.clear();
+                              Future.delayed(
+                                const Duration(milliseconds: 10), () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AskForJoinPage(
+                                        photo: res["family"]["image"], fname: res["family"]["fname"]
+                                      )
+                                    )
+                                  );
+                                }
+                              );
+                            }
+                            else {
+                              Future.delayed(
+                                const Duration(milliseconds: 10), () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(res["status"]),
+                                      action: SnackBarAction(onPressed: () {}, label: "OK",),
+                                    ),
+                                  );
+                                });
+                            }
                           }
                         },
                         backgroundColor: yellow,
@@ -189,7 +215,14 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 }
 
 class AskForJoinPage extends StatelessWidget {
-  const AskForJoinPage({Key? key}) : super(key: key);
+  const AskForJoinPage({
+    Key? key,
+    required this.photo,
+    required this.fname
+  }) : super(key: key);
+
+  final String photo;
+  final String fname;
 
   @override
   Widget build(BuildContext context) {
@@ -206,15 +239,22 @@ class AskForJoinPage extends StatelessWidget {
                 SizedBox(height: 50.h,),
 
                 // TODO: fetched image from backend
-                Image.asset("assets/images/avatar.png", width: 164.w, height: 164.w,),
+                Image.memory(
+                      base64Decode(photo),
+                      width: 164.w,
+                      height: 164.w,
+                    ),
+                // Image.asset("assets/images/avatar.png", width: 164.w, height: 164.w,),
                 SizedBox(height: 30.h,),
                 // TODO: fetched group name from backend
-                Text("我們這一家", style: largeTextStyle,),
+                Text(fname, style: largeTextStyle,),
+                // Text("我們這一家", style: largeTextStyle,),
 
                 SizedBox(height: 50.h,),
                 RoundedElevatedButton(
                   onPressed: () {
                     // TODO: Update group table
+                    
                   },
                   backgroundColor: yellow,
                   fixedSize: Size(85.w, 27.h),
