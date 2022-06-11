@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:famistory/login/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -242,7 +245,7 @@ class RegisterFormState extends State<RegisterForm> {
                                       "INSERT INTO users (uid, acc, pwd, gender, birth, uname) VALUES (?, ?, ?, ?, ?, ?)",
                                     );
                                     var result = await conn.execute("SELECT * FROM users");
-                                    await stmt.execute([generate_id(result.rows.length), controllers[0].text.toString(), controllers[1].text.toString(), dropdownValue, controllers[4].text.toString(), controllers[3].text.toString()]);
+                                    await stmt.execute([generate_id(result.rows.length), controllers[0].text.toString(), sha256.convert(utf8.encode(controllers[1].text)).toString(), dropdownValue, controllers[4].text.toString(), controllers[3].text.toString()]);
                                     await stmt.deallocate();
                                     result = await conn.execute("SELECT * FROM users");
                                     for (final row in result.rows) {

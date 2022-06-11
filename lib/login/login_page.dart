@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:famistory/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -95,7 +98,7 @@ class LoginPageState extends State<LoginPage> {
                                   "SELECT * FROM users WHERE acc = :acc and pwd = :pwd",
                                   {
                                     "acc": _accountController.text.toString(),
-                                    "pwd": _passwordController.text.toString()
+                                    "pwd": sha256.convert(utf8.encode(_passwordController.text)).toString()
                                   });
 
                               if (result.rows.isNotEmpty) {
