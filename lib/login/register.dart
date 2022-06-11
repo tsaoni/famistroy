@@ -245,18 +245,19 @@ class RegisterFormState extends State<RegisterForm> {
                                       "INSERT INTO users (uid, acc, pwd, gender, birth, uname) VALUES (?, ?, ?, ?, ?, ?)",
                                     );
                                     var result = await conn.execute("SELECT * FROM users");
-                                    await stmt.execute([generate_id(result.rows.length), controllers[0].text.toString(), sha256.convert(utf8.encode(controllers[1].text)).toString(), dropdownValue, controllers[4].text.toString(), controllers[3].text.toString()]);
+                                    final String uid = generate_id(result.rows.length);
+                                    await stmt.execute([uid, controllers[0].text.toString(), sha256.convert(utf8.encode(controllers[1].text)).toString(), dropdownValue, controllers[4].text.toString(), controllers[3].text.toString()]);
                                     await stmt.deallocate();
                                     result = await conn.execute("SELECT * FROM users");
                                     for (final row in result.rows) {
-                                      print(row.assoc());
+                                      // print(row.assoc());
                                     }
 
                                     if (!mounted) return;
                                     // navigate to next page
                                     Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => const UploadPage())
+                                        MaterialPageRoute(builder: (context) => UploadPage(uid: uid))
                                     );
                                   }
 
