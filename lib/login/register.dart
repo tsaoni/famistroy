@@ -21,7 +21,10 @@ class RegisterFormState extends State<RegisterForm> {
   // date picker
   DateTime selectedDate = DateTime.now();
   String dropdownValue = '男';
-  TextEditingController dateinput = TextEditingController();
+  bool birthday_valid = true;
+
+  List <TextEditingController> controllers = [TextEditingController(), TextEditingController(), TextEditingController(),
+    TextEditingController(), TextEditingController()];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -50,7 +53,7 @@ class RegisterFormState extends State<RegisterForm> {
       setState(() {
         selectedDate = picked;
         // String formattedDate = selectedDate.weekday.toString();
-        dateinput.text = selectedDate.toString();
+        controllers[4].text = selectedDate.toString();
       });
     }
   }
@@ -58,149 +61,184 @@ class RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
 
-    var isEmpty = true;
-
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(51, 255, 220, 107),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 180.h,
-              child: Align(
-                      alignment: Alignment.center,
-                      child: Text("建立帳戶", style: TextStyle(
-                  fontSize: 28.sp, fontWeight: FontWeight.bold),)
-                    )
-            ),
-            SizedBox(
-              height: 81.h,
-              child: const Align(
-                alignment: Alignment.bottomCenter,
-                child: LoginInputField(title: '帳號',)
-              )
-            ),
-            SizedBox(
-                height: 81.h,
-                child: const Align(
-                    alignment: Alignment.bottomCenter,
-                    child: LoginInputField(title: '密碼',)
-                )
-            ),
-            SizedBox(
-                height: 81.h,
-                child: const Align(
-                    alignment: Alignment.bottomCenter,
-                    child: LoginInputField(title: '再輸入一次密碼',)
-                )
-            ),
-            SizedBox(
-                height: 81.h,
-                child: const Align(
-                    alignment: Alignment.bottomCenter,
-                    child: LoginInputField(title: '姓名',)
-                )
-            ),
-            SizedBox(
-              width: 250.w,
-              height: 25.h,
-              child:
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("生日", style: TextStyle(
-                      fontSize: 18.sp, color: Colors.grey)
-                    )
-                )
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                  width: 260.w,
-                  height: 42.h,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: grey,
-                        width: 3.w,
-                      ),
-                      borderRadius: BorderRadius.circular(10.r)
-                  ),
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: TextField(
-                      controller: dateinput,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),//editing controller of this TextField
-                      readOnly: true, //set it true, so that user will not able to edit text
-                      onTap: () => _selectDate(context),
-                    )
-                  )
-              ),
-            ),
-            SizedBox(height: 10.h,),
-            SizedBox(
-                width: 250.w,
-                height: 25.h,
-                child:
-                Align(
-                    alignment: Alignment.topLeft,
-                    child: Text("性別", style: TextStyle(
-                        fontSize: 18.sp, color: Colors.grey)
-                    )
-                )
-            ),
-            SizedBox(
-                width: 260.w,
-                height: 42.h,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: DropdownButtonFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      filled: true,
-                      fillColor: Colors.white,
+    return Stack(
+          children: [
+            Container(color: const Color.fromARGB(51, 255, 220, 107)),
+            Scaffold(
+              body: Form(
+                key: _formKey,
+                child: Center(
+                child: SingleChildScrollView(
+                      child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                            width: 200.w,
+                            height: 180.h,
+                            child: Align(
+                                alignment: Alignment.center,
+                                child: Text("建立帳戶", style: TextStyle(
+                                    fontSize: 28.sp, fontWeight: FontWeight.bold),)
+                            )
+                        ),
+                        SizedBox(
+                            width: 200.w,
+                            height: 81.h,
+                            child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: LoginInputField(title: '帳號', controller: controllers[0], inputState: 2,)
+                            )
+                        ),
+                        SizedBox(
+                            width: 200.w,
+                            height: 81.h,
+                            child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: LoginInputField(title: '密碼', controller: controllers[1], inputState: 3,)
+                            )
+                        ),
+                        SizedBox(
+                            width: 200.w,
+                            height: 81.h,
+                            child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: LoginInputField(title: '再輸入一次密碼', controller: controllers[2], inputState: 4,)
+                            )
+                        ),
+                        SizedBox(
+                            width: 200.w,
+                            height: 81.h,
+                            child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: LoginInputField(title: '姓名', controller: controllers[3], inputState: 5,)
+                            )
+                        ),
+                        SizedBox(
+                            width: 200.w,
+                            height: 25.h,
+                            child:
+                            Align(
+                                alignment: Alignment.topLeft,
+                                child: Text("生日", style: TextStyle(
+                                    fontSize: 18.sp, color: grey)
+                                )
+                            )
+                        ),
+                        Container(
+                            width: 200.w,
+                            height: 42.h,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: birthday_valid ? grey: Colors.red,
+                                  width: 3.w,
+                                ),
+                                borderRadius: BorderRadius.circular(10.r)
+                            ),
+                            child: SizedBox(
+                                width: 150.w,
+                                height: 20.h,
+                                child: TextField(
+                                  controller: controllers[4],
+                                  textAlign: TextAlign.center,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),//editing controller of this TextField
+                                  readOnly: true, //set it true, so that user will not able to edit text
+                                  onTap: () => _selectDate(context),
+                                )
+                            )
+                        ),
+                        SizedBox(width: 20.w, height: 10.h,),
+                        SizedBox(
+                            width: 200.w,
+                            height: 25.h,
+                            child:
+                            Align(
+                                alignment: Alignment.topLeft,
+                                child: Text("性別", style: TextStyle(
+                                    fontSize: 18.sp, color: grey)
+                                )
+                            )
+                        ),
+                        SizedBox(
+                            width: 200.w,
+                            height: 42.h,
+                            child: DropdownButtonFormField(
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              hint: Text('Please select group'),
+                              isExpanded: true,
+                              isDense: true,
+                              value: dropdownValue,
+                              items: const ['男', '女'].map((item) {
+                                return DropdownMenuItem(
+                                  value: item,
+                                  child: Text(item),
+                                );
+                              }).toList(),
+                              onChanged: (selectedItem) => setState(
+                                    () {
+                                      dropdownValue = selectedItem.toString();
+                                      },
+                              ),
+                            )
+                        ),
+                        SizedBox(
+                            width: 200.w,
+                            height: 100.h,
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: RoundedRectElevatedButton(
+                                backgroundColor: const Color(0xffffd66b),
+                                fixedSize: Size(150.w, 50.h),
+                                onPressed: () {
+                                  setState((){
+                                    bool pass = true;
+                                    for(int i = 0; i < 4; i++){
+                                      if(controllers[i].text.toString() == ""){
+                                        pass = false;
+                                        isValid[i + 2] = false;
+                                      }
+                                      else{
+                                        isValid[i + 2] = true;
+                                      }
+                                    }
+                                    // check second typed password same as the first
+                                    if(controllers[1].text.toString() != controllers[2].text.toString()){
+                                      isValid[4] = false;
+                                      pass = false;
+                                    }
+                                    // authentication on birthday input
+                                    if(controllers[4].text.toString() == ""){
+                                      birthday_valid = false;
+                                      pass = false;
+                                    }
+                                    else{
+                                      birthday_valid = true;
+                                    }
+                                    if(pass) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => const UploadPage())
+                                      );
+                                    }
+                                  });
+                                  },
+                                child: Text("建立", style: smallTextStyle),
+                              ),
+                            )
+                        )
+                      ],
                     ),
-                    hint: Text('Please select group'),
-                    isExpanded: true,
-                    isDense: true,
-                    value: dropdownValue,
-                    items: const ['男', '女'].map((item) {
-                      return DropdownMenuItem(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
-                    onChanged: (selectedItem) => setState(
-                          () {
-                        dropdownValue = selectedItem.toString();
-                      },
-                    ),
-                  ),
                   )
-            ),
-            SizedBox(
-              height: 100.h,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: RoundedRectElevatedButton(
-                  backgroundColor: const Color(0xffffd66b),
-                  fixedSize: Size(150.w, 50.h),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const UploadPage())
-                    );
-                  },
-                  child: Text("建立", style: smallTextStyle),
-                ),
+                )
               )
             )
-          ],
-        ),
-      )
-    );
+          ]
+      );
   }
 }

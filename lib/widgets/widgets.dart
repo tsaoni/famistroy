@@ -162,22 +162,22 @@ class OneTextInputField extends StatelessWidget {
         SizedBox(height: 5.h,),
         Container(
           decoration: BoxDecoration(
-            border: Border.all(
-              color: grey,
-              width: 3.w,
-            ),
-            borderRadius: BorderRadius.circular(20.r)
+              border: Border.all(
+                color: grey,
+                width: 3.w,
+              ),
+              borderRadius: BorderRadius.circular(20.r)
           ),
           width: 260.w,
           height: 42.h,
           child: TextField(
             controller: controller,
             decoration: InputDecoration(
-              hintText: value,
-              hintStyle: smallTextStyle,
-              border: InputBorder.none,
-              // contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w,),
-              contentPadding: EdgeInsets.only(bottom: 10.h, left: 10.w)
+                hintText: value,
+                hintStyle: smallTextStyle,
+                border: InputBorder.none,
+                // contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w,),
+                contentPadding: EdgeInsets.only(bottom: 10.h, left: 10.w)
             ),
           ),
         ),
@@ -186,30 +186,43 @@ class OneTextInputField extends StatelessWidget {
   }
 }
 
-class LoginInputField extends StatelessWidget {
+List <bool> isValid = [true, true, true, true, true, true];
+
+class LoginInputField extends StatefulWidget {
+
   const LoginInputField({
     Key? key,
     this.value,
     this.controller,
     required this.title,
+    required this.inputState,
   }) : super(key: key);
 
   final String? value;
   final String title;
   final TextEditingController? controller;
+  final int inputState;
+
+  @override
+  LoginInputFieldState createState() {
+    return LoginInputFieldState();
+  }
+}
+
+class LoginInputFieldState extends State<LoginInputField> {
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: smallTextStyle),
+        Text(widget.title, style: smallTextStyle),
         SizedBox(height: 5.h,),
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
               border: Border.all(
-                color: grey,
+                color: isValid[widget.inputState] ? grey : Colors.red,
                 width: 3.w,
               ),
               borderRadius: BorderRadius.circular(10.r)
@@ -217,9 +230,9 @@ class LoginInputField extends StatelessWidget {
           width: 260.w,
           height: 42.h,
           child: TextField(
-            controller: controller,
+            controller: widget.controller,
             decoration: InputDecoration(
-                hintText: value,
+                hintText: widget.value,
                 hintStyle: smallTextStyle,
                 border: InputBorder.none,
                 // contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w,),
