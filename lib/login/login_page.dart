@@ -2,6 +2,7 @@ import 'package:famistory/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mysql_client/mysql_client.dart';
 
 import '../widgets/widgets.dart';
 import 'describe.dart';
@@ -57,33 +58,84 @@ class LoginPageState extends State<LoginPage> {
                       RoundedRectElevatedButton(
                         backgroundColor: const Color(0xffffd66b),
                         fixedSize: Size(150.w, 50.h),
-                        onPressed: () {
-                            if(_accountController.text.toString() == "" && _passwordController.text.toString() != "") {
+                        onPressed: () async {
+                            if (_accountController.text.toString() == "" &&
+                                _passwordController.text.toString() != "") {
                               setState(() {
                                 isValid[0] = false;
                                 isValid[1] = true;
                               });
                             }
-                            else if(_accountController.text.toString() != "" && _passwordController.text.toString() == ""){
-                              setState((){
+                            else if (_accountController.text.toString() != "" &&
+                                _passwordController.text.toString() == "") {
+                              setState(() {
                                 isValid[0] = true;
                                 isValid[1] = false;
                               });
                             }
-                            else if(_accountController.text.toString() == "" && _passwordController.text.toString() == ""){
-                              setState((){
+                            else if (_accountController.text.toString() == "" &&
+                                _passwordController.text.toString() == "") {
+                              setState(() {
                                 isValid[0] = false;
                                 isValid[1] = false;
                               });
                             }
-                          else{
-                            isValid[0] = true;
-                            isValid[1] = true;
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MainPage())
-                            );
-                          }
+                            else {
+                              // connect to database
+                              final conn = await MySQLConnection
+                                  .createConnection(
+                                host: "140.116.245.146",
+                                port: 3308,
+                                userName: "famistory",
+                                password: "ofwgjyyi",
+                                databaseName: "famistory", // optional
+                              );
+                              await conn.connect();
+                              var result = await conn.execute(
+                                  "SELECT * FROM users WHERE acc = :acc and pwd = :pwd",
+                                  {
+                                    "acc": _accountController.text.toString(),
+                                    "pwd": _passwordController.text.toString()
+                                  });
+
+                              if (result.rows.isNotEmpty) {
+                                setState(() {
+                                  isValid[0] = true;
+                                  isValid[1] = true;
+                                });
+                                if (!mounted) return;
+                                // navigate to next page
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const MainPage())
+                                );
+                              }
+                              else {
+                                result = await conn.execute(
+                                    "SELECT * FROM users WHERE acc = :acc",
+                                    {
+                                      "acc": _accountController.text.toString()
+                                    });
+                                if (result.rows.isNotEmpty) {
+                                  setState(() {
+                                    isValid[0] = true;
+                                    isValid[1] = false;
+                                  });
+                                }
+                                else {
+                                  setState(() {
+                                    isValid[0] = false;
+                                    isValid[1] = true;
+                                  });
+                                }
+                              }
+
+                              print(result.rows.length);
+                              for (final row in result.rows) {
+                                print(row.assoc());
+                              }
+                            }
                           },
                         child: Text("登入", style: smallTextStyle),
                       ),

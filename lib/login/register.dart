@@ -1,9 +1,12 @@
 import 'package:famistory/login/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mysql_client/mysql_client.dart';
 
 import '../main.dart';
 import '../widgets/widgets.dart';
+
+
 
 // Define a custom Form widget.
 class RegisterForm extends StatefulWidget {
@@ -53,11 +56,15 @@ class RegisterFormState extends State<RegisterForm> {
       setState(() {
         selectedDate = picked;
         // String formattedDate = selectedDate.weekday.toString();
-        controllers[4].text = selectedDate.toString();
+        controllers[4].text = selectedDate.toString().substring(0, 10);
       });
     }
   }
 
+  String generate_id(int user_num){
+    return (user_num - 1).toString().padLeft(8, '0');
+  }
+  
   @override
   Widget build(BuildContext context) {
 
@@ -195,9 +202,9 @@ class RegisterFormState extends State<RegisterForm> {
                               child: RoundedRectElevatedButton(
                                 backgroundColor: const Color(0xffffd66b),
                                 fixedSize: Size(150.w, 50.h),
-                                onPressed: () {
+                                onPressed: () async {
+                                  bool pass = true;
                                   setState((){
-                                    bool pass = true;
                                     for(int i = 0; i < 4; i++){
                                       if(controllers[i].text.toString() == ""){
                                         pass = false;
@@ -220,13 +227,36 @@ class RegisterFormState extends State<RegisterForm> {
                                     else{
                                       birthday_valid = true;
                                     }
-                                    if(pass) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => const UploadPage())
-                                      );
-                                    }
                                   });
+                                  if(pass) {
+                                    // insert data into database
+                                    final conn = await MySQLConnection.createConnection(
+                                      host: "140.116.245.146",
+                                      port: 3308,
+                                      userName: "famistory",
+                                      password: "ofwgjyyi",
+                                      databaseName: "famistory", // optional
+                                    );
+                                    await conn.connect();
+                                    var stmt = await conn.prepare(
+                                      "INSERT INTO users (uid, acc, pwd, gender, birth, uname) VALUES (?, ?, ?, ?, ?, ?)",
+                                    );
+                                    var result = await conn.execute("SELECT * FROM users");
+                                    await stmt.execute([generate_id(result.rows.length), controllers[0].text.toString(), controllers[1].text.toString(), dropdownValue, controllers[4].text.toString(), controllers[3].text.toString()]);
+                                    await stmt.deallocate();
+                                    result = await conn.execute("SELECT * FROM users");
+                                    for (final row in result.rows) {
+                                      print(row.assoc());
+                                    }
+
+                                    if (!mounted) return;
+                                    // navigate to next page
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const UploadPage())
+                                    );
+                                  }
+
                                   },
                                 child: Text("建立", style: smallTextStyle),
                               ),
