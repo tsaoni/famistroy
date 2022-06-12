@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:famistory/info/person_info.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -54,7 +55,7 @@ class GroupComponent extends StatefulWidget {
     required this.soundPlayer,
   }) : super(key: key);
 
-  final Image image;
+  final String image;
   final String groupName;
   final String code;
   final SoundPlayer soundPlayer;
@@ -74,19 +75,30 @@ class _GroupComponentState extends State<GroupComponent> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => GroupInfoPage(),
+              builder: (context) => GroupInfoPage(
+                fid: widget.code,
+                photo: widget.image,
+                fname: widget.groupName,
+              ),
             ),
           );
         },
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            widget.image,
+            SizedBox(width: 40.w,),
+            Image.memory(
+              base64Decode(widget.image),
+              width: 109.w,
+              height: 109.w,
+            ),
             SizedBox(width: 20.w,),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
+                    SizedBox(width: 10.w,),
                     Text(
                       widget.groupName,
                       style: TextStyle(
@@ -104,12 +116,13 @@ class _GroupComponentState extends State<GroupComponent> {
                   ],
                 ),
                 RoundedElevatedButton(
+                  fixedSize: Size(201.w, 40.h,),
                   onPressed: () {
                     copy2Clipboard(context, widget.code);
                   },
                   backgroundColor: yellow,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         "邀請碼: ${widget.code}",
@@ -118,7 +131,7 @@ class _GroupComponentState extends State<GroupComponent> {
                           color: const Color(0x90000000),
                         ),
                       ),
-                      ImageIcon(AssetImage("assets/images/Icon-Artwork.png")),
+                      ImageIcon(const AssetImage("assets/images/Icon-Artwork.png")),
                     ],
                   ),
                 ),
@@ -220,7 +233,7 @@ class _InfoPageBodyState extends State<InfoPageBody> {
   late Future<Family> _family; 
 
   Future<Family> _fetechFamilyInfo() async {
-    final url = Uri.parse("http://140.116.245.146:8000/group/uid/12345678");
+    final url = Uri.parse("http://140.116.245.146:8000/group/uid/${PersonInfo.uid}");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       return Family.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
@@ -250,11 +263,7 @@ class _InfoPageBodyState extends State<InfoPageBody> {
                 itemCount: snapshot.data!.fid.length,
                 itemBuilder: (context, index) {
                   return GroupComponent(
-                    image: Image.memory(
-                      base64Decode(snapshot.data!.photo[index]),
-                      width: 109.w,
-                      height: 109.w,
-                    ),
+                    image: snapshot.data!.photo[index],
                     groupName: snapshot.data!.fname[index],
                     code: snapshot.data!.fid[index],
                     soundPlayer: _soundPlayer,
@@ -303,6 +312,49 @@ class FloatingElevatedButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class MemberComponent extends StatelessWidget {
+  const MemberComponent({
+    Key? key,
+    required this.avatar,
+    required this.uname
+  }) : super(key: key);
+
+  final String avatar;
+  final String uname;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 20.h),
+      child: Row(
+        children: [
+          SizedBox(height: 25.h,),
+          Row(
+            children: [
+              SizedBox(
+                width: 38.w,
+                height: 38.w,
+                child: CircleAvatar(
+                  child: ClipOval(
+                    child: Image.memory(
+                      base64Decode(avatar),
+                      width: 38.w,
+                      height: 38.w,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 20.w,),
+              Text(uname, style: smallTextStyle,),
+            ],
+          ),    
+        ],
       ),
     );
   }

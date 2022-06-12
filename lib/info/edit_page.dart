@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:famistory/info/person_info.dart';
+import 'package:famistory/info/setting_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,6 +54,18 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                               border: Border.all(width: 10.w, color: Colors.white,),
                               borderRadius: BorderRadius.circular(100),
                             ),
+                            // child: SizedBox(
+                            //   width: 130.w,
+                            //   height: 130.w,
+                            //   child: CircleAvatar(
+                            //     child: ClipOval(
+                            //       child: Image.memory(
+                            //         base64Decode(PersonInfo.avatar),
+                            //         fit: BoxFit.contain,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                             child: UserAvatar(avatar: _image!, size: 130.w,),
                           ),
                           Align(
@@ -104,7 +120,7 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                       fixedSize: Size(129.w, 52.h),
                       child: Text("變更密碼", style: smallTextStyle,),
                     ),
-                
+
                     SizedBox(height: 10.h,),
                     OneTextInputField(value: "", title: "姓名", controller: controllers[0],),
                     SizedBox(height: 10.h,),
@@ -129,9 +145,9 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                         );
                         await conn.connect();
                         await conn.execute("UPDATE users SET uname = :uname, birth = :birth, gender = :gender WHERE uid = :uid",
-                            {"uname": controllers[0].text.toString(), "birth": controllers[1].text.toString(), "gender": controllers[2].text.toString(), "uid": currentUser.uid});
+                            {"uname": controllers[0].text.toString(), "birth": controllers[1].text.toString(), "gender": controllers[2].text.toString(), "uid": PersonInfo.uid});
 
-                        var result = await conn.execute("SELECT * from users WHERE uid = :uid", {"uid": currentUser.uid});
+                        var result = await conn.execute("SELECT * from users WHERE uid = :uid", {"uid": PersonInfo.uid});
                         for(final row in result.rows){
                           print(row.assoc());
                         }

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:famistory/widgets/widgets.dart';
+import 'package:famistory/info/person_info.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key}) : super(key: key);
@@ -150,8 +151,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       var url = Uri.parse('http://140.116.245.146:8000/password');
                       var response = await http.post(url,
                         headers: {"Content-type": "application/json"}, 
-                        // TODO: get user id from a long-life class or varible
-                        body: jsonEncode({"uid": 1})
+                        body: jsonEncode({"uid": PersonInfo.uname})
                       );
                       if (response.statusCode == 200) {
                         final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
@@ -181,7 +181,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           final response = await http.put(url,
                             headers: {"Content-type": "application/json"},
                             body: jsonEncode({
-                              "uid": 1,
+                              "uid": PersonInfo.uid,
                               "password": sha256.convert(utf8.encode(_newPasswordController.text)).toString(),
                             }),
                           );

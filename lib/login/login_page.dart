@@ -110,15 +110,20 @@ class LoginPageState extends State<LoginPage> {
 
                                 for (final row in result.rows) {
                                   var info = row.assoc();
-                                  currentUser = PersonInfo(uid: info['uid']!, acc: info['acc']!, pwd: info['pwd']!,
-                                    /*generation: info['generation']!, roles: info['roles']!,*/ gender: info['gender']!,
-                                      birth: info['birth']!, uname: info['uname']!, /*avatar: info['avatar']!, theme: info['theme']!*/);
+                                  PersonInfo.uid = info['uid']!;
+                                  PersonInfo.acc = info['acc']!;
+                                  PersonInfo.pwd = info['pwd']!;
+                                  // PersonInfo.generation = info['generation']!;
+                                  PersonInfo.gender = info['gender']!;
+                                  // PersonInfo.roles = info['roles']!;
+                                  PersonInfo.birth = info['birth']!;
+                                  PersonInfo.uname = info['uname']!;
+                                  PersonInfo.avatar = info['avatar']!;
+                                  // PersonInfo.theme = info['theme']!;
+                                  // currentUser = PersonInfo(uid: info['uid']!, acc: info['acc']!, pwd: info['pwd']!,
+                                  //   /*generation: info['generation']!, roles: info['roles']!,*/ gender: info['gender']!,
+                                  //     birth: info['birth']!, uname: info['uname']!, /*avatar: info['avatar']!, theme: info['theme']!*/);
                                 }
-                                print('current: ');
-                                print(currentUser.uid);
-                                print(currentUser.acc);
-                                print(currentUser.pwd);
-                                print(currentUser.uname);
 
                                 if (!mounted) return;
                                 // navigate to next page
@@ -149,10 +154,10 @@ class LoginPageState extends State<LoginPage> {
                                 }
                               }
 
-                              print(result.rows.length);
-                              for (final row in result.rows) {
-                                print(row.assoc());
-                              }
+                              // print(result.rows.length);
+                              // for (final row in result.rows) {
+                                // print(row.assoc());
+                              // }
                             }
                           },
                         child: Text("登入", style: smallTextStyle),

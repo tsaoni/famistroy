@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as io;
+import 'package:famistory/info/person_info.dart';
 import 'package:famistory/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -177,12 +178,11 @@ class _CommentsState extends State<Comments> {
                 child: TextField(
                   controller: _controller,
                   onSubmitted: (text) async {
-                    // TODO: get user infomation from a long-life class or log
                     final url = Uri.parse("http://140.116.245.146:8000/comments");
                     final response = await http.post(url, 
                       headers: {"Content-type": "application/json"}, 
                       body: jsonEncode({
-                        "uid": "23456789",
+                        "uid": PersonInfo.uid,
                         "aid": widget.aid,
                         "comment": text,
                       })
@@ -603,7 +603,7 @@ class _NewPostPageState extends State<NewPostPage> {
                         else {
                           final url = Uri.parse("http://140.116.245.146:8000/post");
                           final request = http.MultipartRequest("POST", url);
-                          request.fields["uid"] = "12345678";
+                          request.fields["uid"] = PersonInfo.uid;
                           request.fields["content"] = _controller.text;
                           request.fields["visibility"] = "0";
                           request.files.add(await http.MultipartFile.fromPath("photo", _image!));
