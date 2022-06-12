@@ -73,7 +73,7 @@ class _PostPageState extends State<PostPage> {
     final url = Uri.parse("http://140.116.245.146:8000/allpost");
     final response = await http.post(url);
     if (response.statusCode == 200) {
-      print(jsonDecode(utf8.decode(response.bodyBytes)));
+      // print(jsonDecode(utf8.decode(response.bodyBytes)));
       return Post.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
     else {
@@ -156,13 +156,13 @@ class _PostPageState extends State<PostPage> {
         child: FittedBox(
             child: FloatingActionButton(
               onPressed: () async {
-                final _hasNewPost = await Navigator.push(
+                final hasNewPost = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const NewPostPage(),
                   ),
                 );
-                if (_hasNewPost) {
+                if (hasNewPost) {
                   setState(() {
                     
                   });

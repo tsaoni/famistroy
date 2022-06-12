@@ -12,7 +12,7 @@ import '../main.dart';
 import '../widgets/widgets.dart';
 
 
-final String photo = "assets/images/personnal.png";
+const String photo = "assets/images/personnal.png";
 
 class UploadPage extends StatefulWidget {
     const UploadPage({required this.uid, Key? key}) : super(key: key);
@@ -61,7 +61,7 @@ class UploadPageState extends State<UploadPage> {
                                           request.files.add(await http.MultipartFile.fromPath("avatar", _image!));
                                           request.send().then((response) async {
                                             final res = jsonDecode(await response.stream.bytesToString());
-                                            print(res);
+                                            // print(res);
                                           });
 
                                           Navigator.pushAndRemoveUntil(
@@ -129,7 +129,7 @@ class UploadPageState extends State<UploadPage> {
                                       );
 
                                       if (response.statusCode == 200) {
-                                        print(jsonDecode(utf8.decode(response.bodyBytes)));
+                                        // print(jsonDecode(utf8.decode(response.bodyBytes)));
                                       }
                                       else {
                                         throw Exception('Failed to upload data to server');
