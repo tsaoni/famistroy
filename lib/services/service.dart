@@ -188,12 +188,24 @@ class Speech2Text {
   }
 }
 
-Future<void> Copy2Clipboard(BuildContext context, String text) async {
-  await Clipboard.setData(ClipboardData(text: text));
+Future<void> copy2Clipboard(BuildContext context, String text) async {
+  await Clipboard.setData(
+    ClipboardData(text: text)).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('已複製到剪貼簿'),
+          action: SnackBarAction(label: "OK", onPressed: () => {}),
+        )
+      );
+    }
+  );
+}
+
+Future<void> showSomeMessage(BuildContext context, String text) async {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: const Text('已複製到剪貼簿'),
-      action: SnackBarAction(label: "OK", onPressed: () => {}),
-    ),
+      content: Text(text),
+      action: SnackBarAction(onPressed: () {}, label: "OK",),
+    )
   );
 }

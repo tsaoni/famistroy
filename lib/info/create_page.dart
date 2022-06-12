@@ -56,7 +56,10 @@ class CreatePage extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => AskForJoinPage(
-                                        photo: res["family"]["image"], fname: res["family"]["fname"]
+                                        photo: res["family"]["image"],
+                                        fname: res["family"]["fname"],
+                                        fid: res["family"]["fid"],
+                                        uid: "12345678"
                                       )
                                     )
                                   );
@@ -66,13 +69,9 @@ class CreatePage extends StatelessWidget {
                             else {
                               Future.delayed(
                                 const Duration(milliseconds: 10), () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(res["status"]),
-                                      action: SnackBarAction(onPressed: () {}, label: "OK",),
-                                    ),
-                                  );
-                                });
+                                  showSomeMessage(context, res["status"]);
+                                }
+                              );
                             }
                           }
                         },
@@ -182,13 +181,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       final request = http.MultipartRequest("POST", url);
                       request.fields["uid"] = "12345678";
                       request.fields["fname"] = _controller.text;
-                      request.fields["fcnt"] = "1";
                       request.files.add(await http.MultipartFile.fromPath("photo", _image!));
                       
                       request.send().then((response) async {
                         final decodedResponse = jsonDecode(await response.stream.bytesToString());
                         _code = decodedResponse["code"];
-                        Future.delayed(const Duration(microseconds: 10), () {
+                        Future.delayed(const Duration(microseconds: 1000), () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -218,11 +216,15 @@ class AskForJoinPage extends StatelessWidget {
   const AskForJoinPage({
     Key? key,
     required this.photo,
-    required this.fname
+    required this.fname,
+    required this.fid,
+    required this.uid
   }) : super(key: key);
 
   final String photo;
   final String fname;
+  final String fid;
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
@@ -232,57 +234,76 @@ class AskForJoinPage extends StatelessWidget {
           alignment: Alignment.topCenter,
           children: [
             Container(color: lightYellow,),
-            Column(
-              children: [
-                SizedBox(height: 100.h,),
-                Text("加入/建立家族", style: largeTextStyle,),
-                SizedBox(height: 50.h,),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 100.h,),
+                  Text("加入/建立家族", style: largeTextStyle,),
+                  SizedBox(height: 50.h,),
 
-                // TODO: fetched image from backend
-                Image.memory(
-                      base64Decode(photo),
-                      width: 164.w,
-                      height: 164.w,
-                    ),
-                // Image.asset("assets/images/avatar.png", width: 164.w, height: 164.w,),
-                SizedBox(height: 30.h,),
-                // TODO: fetched group name from backend
-                Text(fname, style: largeTextStyle,),
-                // Text("我們這一家", style: largeTextStyle,),
-
-                SizedBox(height: 50.h,),
-                RoundedElevatedButton(
-                  onPressed: () {
-                    // TODO: Update group table
-                    
-                  },
-                  backgroundColor: yellow,
-                  fixedSize: Size(85.w, 27.h),
-                  child: Text("加入", style: smallTextStyle,),
-                ),
-                SizedBox(height: 50.h,),
-                
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("弄錯了嗎？", style: smallTextStyle,),
-                    SizedBox(width: 20.w,),
-                    InkWell(
-                      child: Text(
-                        "重新搜尋",
-                        style: TextStyle(
-                          color: lightBlack,
-                          fontSize: 17.sp,
-                          decoration: TextDecoration.underline
-                        ),
+                  Image.memory(
+                        base64Decode(photo),
+                        width: 164.w,
+                        height: 164.w,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                  SizedBox(height: 30.h,),
+                  Text(fname, style: largeTextStyle,),
+            
+                  SizedBox(height: 50.h,),
+                  RoundedElevatedButton(
+                    onPressed: () async {
+                      // TODO: Update group table
+                      final url = Uri.parse("http://140.116.245.146:8000/joinin");
+                      await http.post(url, 
+                        headers: {"Content-type": "application/json"},
+                        body: jsonEncode({
+                          "fid": fid,
+                          "uid": uid
+                        })
+                      ).then((response) {
+                        if (response.statusCode == 200) {
+                          final res = jsonDecode(utf8.decode(response.bodyBytes));
+                          if (res["status"] == "OK") {
+                            Navigator.popUntil(context, ModalRoute.withName("/info"));
+                            showSomeMessage(context, "成功加入家族");                         
+                          }
+                          else {
+                            showSomeMessage(context, res["status"]);
+                          }
+                        }
+                        else {
+                          throw Exception("Join group failed");
+                        }
+                      });
+                    },
+                    backgroundColor: yellow,
+                    fixedSize: Size(85.w, 27.h),
+                    child: Text("加入", style: smallTextStyle,),
+                  ),
+                  SizedBox(height: 50.h,),
+                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("弄錯了嗎？", style: smallTextStyle,),
+                      SizedBox(width: 20.w,),
+                      InkWell(
+                        child: Text(
+                          "重新搜尋",
+                          style: TextStyle(
+                            color: lightBlack,
+                            fontSize: 17.sp,
+                            decoration: TextDecoration.underline
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -333,7 +354,7 @@ class CreateSuccessfullyPage extends StatelessWidget {
                       SizedBox(height: 20.h,),
                       RoundedElevatedButton(
                         onPressed: () {
-                          Copy2Clipboard(context, code);
+                          copy2Clipboard(context, code);
                         },
                         fixedSize: Size(206.w, 40.h,),
                         elevated: false,

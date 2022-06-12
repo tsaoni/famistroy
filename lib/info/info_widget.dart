@@ -81,11 +81,6 @@ class _GroupComponentState extends State<GroupComponent> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Image.asset(
-            //   widget.image,
-            //   width: 100.w,
-            //   height: 100.h,
-            // ),
             widget.image,
             SizedBox(width: 20.w,),
             Column(
@@ -99,6 +94,7 @@ class _GroupComponentState extends State<GroupComponent> {
                         color: const Color(0xFF000000),
                       ),
                     ),
+                    SizedBox(width: 10.w,),
                     InkWell(
                       child: Icon(Icons.volume_up),
                       onTap: () async {
@@ -109,7 +105,7 @@ class _GroupComponentState extends State<GroupComponent> {
                 ),
                 RoundedElevatedButton(
                   onPressed: () {
-                    Copy2Clipboard(context, widget.code);
+                    copy2Clipboard(context, widget.code);
                   },
                   backgroundColor: yellow,
                   child: Row(
@@ -202,10 +198,9 @@ class _InfoPageBodyState extends State<InfoPageBody> {
   
   @override
   void initState() {
-    print("init");
     super.initState();
     _soundPlayer.init();
-    _family = fetechFamilyInfo();
+    _family = _fetechFamilyInfo();
   }
 
   @override
@@ -224,11 +219,10 @@ class _InfoPageBodyState extends State<InfoPageBody> {
 
   late Future<Family> _family; 
 
-  Future<Family> fetechFamilyInfo() async {
+  Future<Family> _fetechFamilyInfo() async {
     final url = Uri.parse("http://140.116.245.146:8000/group/uid/12345678");
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      print(jsonDecode(utf8.decode(response.bodyBytes)));
       return Family.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
     else {
@@ -239,12 +233,13 @@ class _InfoPageBodyState extends State<InfoPageBody> {
 
   @override
   Widget build(BuildContext context) {
+    _family = _fetechFamilyInfo();
     return Padding(
       padding: EdgeInsets.only(top: 290.h, bottom: 110.h,),
       child: RefreshIndicator(
         onRefresh: () async {
           setState(() {
-            _family = fetechFamilyInfo();
+            _family = _fetechFamilyInfo();
           });
         },
         child: FutureBuilder<Family>(
@@ -255,7 +250,6 @@ class _InfoPageBodyState extends State<InfoPageBody> {
                 itemCount: snapshot.data!.fid.length,
                 itemBuilder: (context, index) {
                   return GroupComponent(
-                    // image: "assets/images/avatar.png",
                     image: Image.memory(
                       base64Decode(snapshot.data!.photo[index]),
                       width: 109.w,
@@ -271,7 +265,7 @@ class _InfoPageBodyState extends State<InfoPageBody> {
             else if (snapshot.hasError) {
               return Center(child: Text("${snapshot.error!}"));
             }
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           },
         ),
       ),
