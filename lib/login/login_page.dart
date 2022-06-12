@@ -9,6 +9,7 @@ import 'package:mysql_client/mysql_client.dart';
 
 import '../widgets/widgets.dart';
 import 'describe.dart';
+import '../info/person_info.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -106,6 +107,19 @@ class LoginPageState extends State<LoginPage> {
                                   isValid[0] = true;
                                   isValid[1] = true;
                                 });
+
+                                for (final row in result.rows) {
+                                  var info = row.assoc();
+                                  currentUser = PersonInfo(uid: info['uid']!, acc: info['acc']!, pwd: info['pwd']!,
+                                    /*generation: info['generation']!, roles: info['roles']!,*/ gender: info['gender']!,
+                                      birth: info['birth']!, uname: info['uname']!, /*avatar: info['avatar']!, theme: info['theme']!*/);
+                                }
+                                print('current: ');
+                                print(currentUser.uid);
+                                print(currentUser.acc);
+                                print(currentUser.pwd);
+                                print(currentUser.uname);
+
                                 if (!mounted) return;
                                 // navigate to next page
                                 Navigator.push(

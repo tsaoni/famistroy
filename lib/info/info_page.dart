@@ -1,3 +1,4 @@
+import 'package:famistory/info/person_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -47,7 +48,7 @@ class _InfoPageState extends State<InfoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("王小明", style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),),
+                      Text(currentUser.uname, style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),),
                       SizedBox(height: 20.h),
                       SizedBox(
                         width: 139.w,
