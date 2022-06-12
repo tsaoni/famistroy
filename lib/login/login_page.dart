@@ -122,6 +122,7 @@ class LoginPageState extends State<LoginPage> {
 
                                 if (!mounted) return;
                                 // navigate to next page
+                                Navigator.pop(context);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

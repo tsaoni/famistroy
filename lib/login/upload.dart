@@ -64,9 +64,10 @@ class UploadPageState extends State<UploadPage> {
                                             print(res);
                                           });
 
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => const MainPage())
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(builder: (BuildContext context) => const MainPage()),
+                                            ModalRoute.withName('/card'),
                                           );
                                         } else {
                                           final ImagePicker picker = ImagePicker();
@@ -133,11 +134,12 @@ class UploadPageState extends State<UploadPage> {
                                       else {
                                         throw Exception('Failed to upload data to server');
                                       }
-                                      
-                                      
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => const MainPage())
+
+
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (BuildContext context) => const MainPage()),
+                                        ModalRoute.withName('/card'),
                                       );
                                     }
                                 )
