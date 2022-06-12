@@ -10,9 +10,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:famistory/services/service.dart';
 import 'package:famistory/widgets/widgets.dart';
 
-class CreatePage extends StatelessWidget {
-  CreatePage({Key? key}) : super(key: key);
+class CreatePage extends StatefulWidget {
+  const CreatePage({Key? key}) : super(key: key);
+
+  @override
+  State<CreatePage> createState() => _CreatePageState();
+}
+
+class _CreatePageState extends State<CreatePage> {
   final TextEditingController _controller = TextEditingController();
+  bool _noMatchResults = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,56 +38,65 @@ class CreatePage extends StatelessWidget {
                   Text("加入/建立家族", style: largeTextStyle,),
                   SizedBox(height: 100.h,),
                   
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      OneTextInputField(title: "加入家族", controller: _controller,),
-                      SizedBox(height: 20.h,),
-                      RoundedElevatedButton(
-                        onPressed: () async {
-                          // TODO:
-                          // 1. fetch group information from backend
-                          // 2. checkout whether or not existing a group match the code
-                          // 3. redirect to new page for asking join to the group if exists
-                          
-                          final url = Uri.parse("http://140.116.245.146:8000/group/fid/${_controller.text}");
-                          final response = await http.get(url);
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          OneTextInputField(title: "加入家族", controller: _controller,),
+                          SizedBox(height: 20.h,),
+                          RoundedElevatedButton(
+                            onPressed: () async {
+                              // TODO: Use true uid
+                              final url = Uri.parse("http://140.116.245.146:8000/group/fid/${_controller.text}");
+                              final response = await http.get(url);
 
-                          if (response.statusCode == 200) {
-                            final res = jsonDecode(utf8.decode(response.bodyBytes));
-                            if (res["status"] == "OK") {
-                              _controller.clear();
-                              Future.delayed(
-                                const Duration(milliseconds: 10), () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AskForJoinPage(
-                                        photo: res["family"]["image"],
-                                        fname: res["family"]["fname"],
-                                        fid: res["family"]["fid"],
-                                        uid: "12345678"
-                                      )
-                                    )
+                              if (response.statusCode == 200) {
+                                final res = jsonDecode(utf8.decode(response.bodyBytes));
+                                if (res["status"] == "OK") {
+                                  _controller.clear();
+                                  Future.delayed(
+                                    const Duration(milliseconds: 10), () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => AskForJoinPage(
+                                            photo: res["family"]["image"],
+                                            fname: res["family"]["fname"],
+                                            fid: res["family"]["fid"],
+                                            uid: "12345678"
+                                          )
+                                        )
+                                      ).then((value) => setState(() {_noMatchResults = false;}));
+                                    }
                                   );
                                 }
-                              );
-                            }
-                            else {
-                              Future.delayed(
-                                const Duration(milliseconds: 10), () {
-                                  showSomeMessage(context, res["status"]);
+                                else {
+                                  Future.delayed(
+                                    const Duration(milliseconds: 10), () {
+                                      // showSomeMessage(context, res["status"]);
+                                      
+                                      setState(() => _noMatchResults = true);
+                                    }
+                                  );
                                 }
-                              );
-                            }
-                          }
-                        },
-                        backgroundColor: yellow,
-                        child: Text("確認", style: smallTextStyle,),
+                              }
+                            },
+                            backgroundColor: yellow,
+                            child: Text("確認", style: smallTextStyle,),
+                          ),
+                          SizedBox(height: 20.h,),
+                          Container(
+                            child: _noMatchResults
+                                 ? Text("未搜尋到符合的家族", style: TextStyle(fontSize: 17.sp, color: Colors.red,),)
+                                 : null,
+                          ),
+                          SizedBox(height: 60.h,),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 80.h,),
             
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
