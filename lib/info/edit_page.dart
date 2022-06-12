@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:famistory/info/password_page.dart';
 import 'package:famistory/post/post_widgets.dart';
 import 'package:famistory/widgets/widgets.dart';
+import 'package:mysql_client/mysql_client.dart';
+import 'person_info.dart';
 
 class EditPersonalInfoPage extends StatefulWidget {
   const EditPersonalInfoPage({ Key? key }) : super(key: key);
@@ -17,6 +19,7 @@ class EditPersonalInfoPage extends StatefulWidget {
 
 class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
 
+  List<TextEditingController>controllers = [TextEditingController(), TextEditingController(), TextEditingController()];
   String? _image = "assets/images/avatar.png";
 
   @override
@@ -35,11 +38,10 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                 alignment: Alignment.topCenter,
                 child: Column(
                   children: [
-                    SizedBox(height: 50.h,),
                     // Stack edit icon on the UserAvatar
                     SizedBox(
-                      width: 171.w,
-                      height: 171.w,
+                      width: 141.w,
+                      height: 141.w,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -103,21 +105,36 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                       child: Text("變更密碼", style: smallTextStyle,),
                     ),
                 
-                    SizedBox(height: 20.h,),
-                    const OneTextInputField(value: "王小明", title: "姓名",),
-                    SizedBox(height: 20.h,),
-                    const OneTextInputField(value: "1953/08/19", title: "生日",),
-                    SizedBox(height: 20.h,),
-                    const OneTextInputField(value: "男", title: "性別",),
+                    SizedBox(height: 10.h,),
+                    OneTextInputField(value: "", title: "姓名", controller: controllers[0],),
+                    SizedBox(height: 10.h,),
+                    OneTextInputField(value: "", title: "生日", controller: controllers[1],),
+                    SizedBox(height: 10.h,),
+                    OneTextInputField(value: "", title: "性別", controller: controllers[2],),
           
-                    SizedBox(height: 50.h,),
+                    SizedBox(height: 25.h,),
           
                     RoundedRectElevatedButton(
                       backgroundColor: yellow,
                       radius: 10.r,
-                      onPressed: () {
+                      onPressed: () async {
                         // TODO: Update the data
                         // name, birth, gender, avatar
+                        final conn = await MySQLConnection.createConnection(
+                          host: "140.116.245.146",
+                          port: 3308,
+                          userName: "famistory",
+                          password: "ofwgjyyi",
+                          databaseName: "famistory", // optional
+                        );
+                        await conn.connect();
+                        await conn.execute("UPDATE users SET uname = :uname, birth = :birth, gender = :gender WHERE uid = :uid",
+                            {"uname": controllers[0].text.toString(), "birth": controllers[1].text.toString(), "gender": controllers[2].text.toString(), "uid": currentUser.uid});
+
+                        var result = await conn.execute("SELECT * from users WHERE uid = :uid", {"uid": currentUser.uid});
+                        for(final row in result.rows){
+                          print(row.assoc());
+                        }
                       },
                       fixedSize: Size(178.w, 54.h),
                       child: Text("儲存變更", style: largeTextStyle,),

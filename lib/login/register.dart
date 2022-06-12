@@ -124,7 +124,7 @@ class RegisterFormState extends State<RegisterForm> {
                         ),
                         SizedBox(
                             width: 200.w,
-                            height: 25.h,
+                            height: 30.h,
                             child:
                             Align(
                                 alignment: Alignment.topLeft,
@@ -161,7 +161,7 @@ class RegisterFormState extends State<RegisterForm> {
                         SizedBox(width: 20.w, height: 10.h,),
                         SizedBox(
                             width: 200.w,
-                            height: 25.h,
+                            height: 30.h,
                             child:
                             Align(
                                 alignment: Alignment.topLeft,
@@ -241,24 +241,39 @@ class RegisterFormState extends State<RegisterForm> {
                                       databaseName: "famistory", // optional
                                     );
                                     await conn.connect();
-                                    var stmt = await conn.prepare(
-                                      "INSERT INTO users (uid, acc, pwd, gender, birth, uname) VALUES (?, ?, ?, ?, ?, ?)",
-                                    );
-                                    var result = await conn.execute("SELECT * FROM users");
-                                    final String uid = generate_id(result.rows.length);
-                                    await stmt.execute([uid, controllers[0].text.toString(), sha256.convert(utf8.encode(controllers[1].text)).toString(), dropdownValue, controllers[4].text.toString(), controllers[3].text.toString()]);
-                                    await stmt.deallocate();
-                                    result = await conn.execute("SELECT * FROM users");
-                                    for (final row in result.rows) {
-                                      // print(row.assoc());
-                                    }
+                                    var result = await conn.execute("SELECT * FROM users WHERE acc = :acc", {"acc": controllers[0].text.toString()});
 
-                                    if (!mounted) return;
-                                    // navigate to next page
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => UploadPage(uid: uid))
-                                    );
+                                    if(result.rows.isEmpty){
+                                      result = await conn.execute("SELECT * FROM users");
+                                      final String uid = generate_id(result.rows.length);
+                                      var stmt = await conn.prepare(
+                                          "INSERT INTO users (uid, acc, pwd, gender, birth, uname) VALUES (?, ?, ?, ?, ?, ?)");
+                                      await stmt.execute([uid, controllers[0].text.toString(), sha256.convert(utf8.encode(controllers[1].text)).toString(), dropdownValue, controllers[4].text.toString(), controllers[3].text.toString()]);
+                                      await stmt.deallocate();
+                                      result = await conn.execute("SELECT * FROM users");
+                                      for (final row in result.rows) {
+                                        // print(row.assoc());
+                                      }
+
+                                      if (!mounted) return;
+                                      // navigate to next page
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UploadPage(uid: uid))
+                                      );
+                                    }
+                                    else{
+                                      setState((){
+                                        for(int i = 0; i < 4; i++){
+                                          if(i == 0){
+                                            isValid[i + 2] = false;
+                                          }
+                                          else{
+                                            isValid[i + 2] = true;
+                                          }
+                                        }
+                                      });
+                                    }
                                   }
 
                                   },
