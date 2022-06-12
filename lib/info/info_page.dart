@@ -49,7 +49,7 @@ class _InfoPageState extends State<InfoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(currentUser.uname, style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),),
+                      Text(PersonInfo.uname, style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),),
                       SizedBox(height: 20.h),
                       SizedBox(
                         width: 139.w,
@@ -168,7 +168,6 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
           children: [
             Container(color: lightYellow,),
             InfoPageNavigationBar(
-              // TODO: fetch group info from backend
               height: 400.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -226,7 +225,6 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("成員", style: smallTextStyle,),
-                    // TODO: fetch members from backend
                     FutureBuilder<Member> (
                       future: _member,
                       builder: (context, snapshot) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:famistory/info/person_info.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -232,7 +233,7 @@ class _InfoPageBodyState extends State<InfoPageBody> {
   late Future<Family> _family; 
 
   Future<Family> _fetechFamilyInfo() async {
-    final url = Uri.parse("http://140.116.245.146:8000/group/uid/12345678");
+    final url = Uri.parse("http://140.116.245.146:8000/group/uid/${PersonInfo.uid}");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       return Family.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));

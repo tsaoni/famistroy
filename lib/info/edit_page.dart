@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:famistory/info/person_info.dart';
+import 'package:famistory/info/setting_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,6 +52,18 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                               border: Border.all(width: 10.w, color: Colors.white,),
                               borderRadius: BorderRadius.circular(100),
                             ),
+                            // child: SizedBox(
+                            //   width: 130.w,
+                            //   height: 130.w,
+                            //   child: CircleAvatar(
+                            //     child: ClipOval(
+                            //       child: Image.memory(
+                            //         base64Decode(PersonInfo.avatar),
+                            //         fit: BoxFit.contain,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                             child: UserAvatar(avatar: _image!, size: 130.w,),
                           ),
                           Align(
@@ -104,11 +120,11 @@ class _EditPersonalInfoPageState extends State<EditPersonalInfoPage> {
                     ),
                 
                     SizedBox(height: 20.h,),
-                    const OneTextInputField(value: "王小明", title: "姓名",),
+                    OneTextInputField(value: PersonInfo.uname, title: "姓名",),
                     SizedBox(height: 20.h,),
-                    const OneTextInputField(value: "1953/08/19", title: "生日",),
+                    OneTextInputField(value: PersonInfo.birth, title: "生日",),
                     SizedBox(height: 20.h,),
-                    const OneTextInputField(value: "男", title: "性別",),
+                    OneTextInputField(value: PersonInfo.gender, title: "性別",),
           
                     SizedBox(height: 50.h,),
           

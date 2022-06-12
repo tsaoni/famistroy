@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as io;
+import 'package:famistory/info/person_info.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -48,7 +49,6 @@ class _CreatePageState extends State<CreatePage> {
                           SizedBox(height: 20.h,),
                           RoundedElevatedButton(
                             onPressed: () async {
-                              // TODO: Use true uid
                               final url = Uri.parse("http://140.116.245.146:8000/group/fid/${_controller.text}");
                               final response = await http.get(url);
 
@@ -65,7 +65,7 @@ class _CreatePageState extends State<CreatePage> {
                                             photo: res["family"]["image"],
                                             fname: res["family"]["fname"],
                                             fid: res["family"]["fid"],
-                                            uid: "12345678"
+                                            uid: PersonInfo.uid
                                           )
                                         )
                                       ).then((value) => setState(() {_noMatchResults = false;}));
@@ -195,7 +195,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     onPressed: () async {
                       final url = Uri.parse("http://140.116.245.146:8000/group");
                       final request = http.MultipartRequest("POST", url);
-                      request.fields["uid"] = "12345678";
+                      request.fields["uid"] = PersonInfo.uid;
                       request.fields["fname"] = _controller.text;
                       request.files.add(await http.MultipartFile.fromPath("photo", _image!));
                       
